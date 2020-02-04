@@ -15,7 +15,11 @@ options(shiny.reactlog = TRUE)
 
 # check dataset app -----
 ui = fluidPage(
-    selectInput(inputId = 'dataset', label = 'Dataset Label', choices = ls('package:datasets')),
+    selectInput(
+        inputId = 'dataset',
+        label = 'Dataset Label',
+        choices = ls('package:datasets')
+    ),
     verbatimTextOutput(outputId = 'summary'),
     tableOutput('table')
 )
@@ -24,17 +28,13 @@ server = function(input, output , session) {
         get(input$dataset, 'package:datasets')
     })
 
-    output$summary = renderPrint(
-        {
-            summary(dataset())
-        }
-    )
+    output$summary = renderPrint({
+        summary(dataset())
+    })
 
-    output$table = renderTable(
-        {
-            dataset()
-        }
-    )
+    output$table = renderTable({
+        dataset()
+    })
 }
 
 shinyApp(ui, server)
@@ -43,14 +43,30 @@ shinyApp(ui, server)
 library(shiny)
 ui = shiny::fluidPage(
     title = 'greeting app',
-    textInput(inputId = 'name', label = 'what is your name?', width = 200, placeholder = 'NASDAP'),
-    numericInput(inputId = 'age', label = 'How old are you?', value = 18, min = 0, max = 100, width = 200),
+    textInput(
+        inputId = 'name',
+        label = 'what is your name?',
+        width = 200,
+        placeholder = 'NASDAP'
+    ),
+    numericInput(
+        inputId = 'age',
+        label = 'How old are you?',
+        value = 18,
+        min = 0,
+        max = 100,
+        width = 200
+    ),
     verbatimTextOutput('greeting')
 )
 
 server = function(input, output, session) {
     output$greeting = renderText({
-        stringr::str_c("Hello ", input$name, ' , ', input$age, ' years old. How are ya?')
+        stringr::str_c("Hello ",
+                       input$name,
+                       ' , ',
+                       input$age,
+                       ' years old. How are ya?')
     })
 }
 
@@ -58,23 +74,46 @@ shinyApp(ui, server)
 
 # exercise 2 ----
 ui = fluidPage(
-    sliderInput('x', 'x is', min = 1, max = 50, value = 30),
-    sliderInput('y', 'y is', min = 1, max = 50, value = 5),
-    "then, (x * y) is", textOutput("product"),
-    "and, (x * y) + 5 is", textOutput("product_plus5"),
-    "and (x * y) + 10 is", textOutput("product_plus10")
+    sliderInput(
+        'x',
+        'x is',
+        min = 1,
+        max = 50,
+        value = 30
+    ),
+    sliderInput(
+        'y',
+        'y is',
+        min = 1,
+        max = 50,
+        value = 5
+    ),
+    "then, (x * y) is",
+    textOutput("product"),
+    "and, (x * y) + 5 is",
+    textOutput("product_plus5"),
+    "and (x * y) + 10 is",
+    textOutput("product_plus10")
 )
 server  = function(input, output, session) {
-    product = reactive({input$x * input$y})
-    output$product = renderText({product()})
-    output$product_plus5 = renderText({product()+5})
-    output$product_plus10 = renderText({product()}+10)
+    product = reactive({
+        input$x * input$y
+    })
+    output$product = renderText({
+        product()
+    })
+    output$product_plus5 = renderText({
+        product() + 5
+    })
+    output$product_plus10 = renderText({
+        product()
+    } + 10)
 }
 shinyApp(ui, server)
 
 # exercise 3 ----
 library(ggplot2)
-datasets = data(package = 'ggplot2')$results[,'Item']
+datasets = data(package = 'ggplot2')$results[, 'Item']
 ui = fluidPage(
     selectInput('dataset', 'Dataset', choices = datasets),
     # textOutput('name'),
@@ -84,13 +123,21 @@ ui = fluidPage(
 )
 
 server = function(input, output, session) {
-    dataset = reactive({get(input$dataset, 'package:ggplot2')})
-    output$summary = renderPrint({summary(dataset())})
+    dataset = reactive({
+        get(input$dataset, 'package:ggplot2')
+    })
+    output$summary = renderPrint({
+        summary(dataset())
+    })
     # output$plot = renderPlot({plot(dataset())})
     # output$name = input$dataset
-    output$plot = renderPlot({plot(dataset()[,1])})
+    output$plot = renderPlot({
+        plot(dataset()[, 1])
+    })
     # problem is that it is too big of data frame to render plot or table
-    output$table = renderTable({dataset()[1:10,]})
+    output$table = renderTable({
+        dataset()[1:10,]
+    })
 }
 
 shinyApp(ui, server)
@@ -99,35 +146,137 @@ shinyApp(ui, server)
 animals = c('dog', 'cat', 'mouse', 'human')
 
 ui = fluidPage(
-    textInput('name', 'What is your name?', width = 300, placeholder = 'your name', value = NA_character_),
+    textInput(
+        'name',
+        'What is your name?',
+        width = 300,
+        placeholder = 'your name',
+        value = NA_character_
+    ),
     textOutput(outputId = 'sen'),
-    passwordInput('password', 'your password', placeholder = 'your password', width = 300),
-    textAreaInput('story', 'your story', rows = 5, placeholder = 'your story should be good',
-                  width = 300, height = 200, cols = 15, value = NULL, resize = 'vertical'),
-    sliderInput('age', 'What is your age', min = 0, max = 100, value = 25, round = T, ticks = T,
-                step = 2, width = 300, pre = 'age-', sep = ',', post = '-yo'),
-    sliderInput('wake_time', 'What is waking hours', min = 0, max = 24, value = c(6, 22), round = T, ticks = T,
-                step = 1, width = 300, pre = 'age-', sep = ',', post = '-yo'),
+    passwordInput(
+        'password',
+        'your password',
+        placeholder = 'your password',
+        width = 300
+    ),
+    textAreaInput(
+        'story',
+        'your story',
+        rows = 5,
+        placeholder = 'your story should be good',
+        width = 300,
+        height = 200,
+        cols = 15,
+        value = NULL,
+        resize = 'vertical'
+    ),
+    sliderInput(
+        'age',
+        'What is your age',
+        min = 0,
+        max = 100,
+        value = 25,
+        round = T,
+        ticks = T,
+        step = 2,
+        width = 300,
+        pre = 'age-',
+        sep = ',',
+        post = '-yo'
+    ),
+    sliderInput(
+        'wake_time',
+        'What is waking hours',
+        min = 0,
+        max = 24,
+        value = c(6, 22),
+        round = T,
+        ticks = T,
+        step = 1,
+        width = 300,
+        pre = 'age-',
+        sep = ',',
+        post = '-yo'
+    ),
     # textOutput('w'),
-    numericInput('lucky', 'What is your lucky number', value = 99, width = 300),
-    dateInput('dt', 'Your birthday', weekstart = 1, autoclose = T, daysofweekdisabled = 0, width = 300),
-    dateRangeInput('dt_range', 'Best time this month', weekstart = 1, autoclose = T, width = 300),
-    selectInput('state', 'favorite state?', choices = state.name, multiple = T,
-                selected = c('dog', 'human'), selectize = F, width = 300),
-    radioButtons('animal', 'fav animal?', choices = animals, selected = 'cat'),
-    radioButtons('emo', 'how do you feel right now?',
-                 choiceNames = list(icon('angry'), icon('smile'), icon('sad-tear')),
-                 choiceValues = list('angry', 'happy', 'sad'),
-                 selected = 'cat'),
-    checkboxGroupInput('animal2', 'hated animal?', choices = animals, selected = 'human', width = 300),
+    numericInput(
+        'lucky',
+        'What is your lucky number',
+        value = 99,
+        width = 300
+    ),
+    dateInput(
+        'dt',
+        'Your birthday',
+        weekstart = 1,
+        autoclose = T,
+        daysofweekdisabled = 0,
+        width = 300
+    ),
+    dateRangeInput(
+        'dt_range',
+        'Best time this month',
+        weekstart = 1,
+        autoclose = T,
+        width = 300
+    ),
+    selectInput(
+        'state',
+        'favorite state?',
+        choices = state.name,
+        multiple = T,
+        selected = c('dog', 'human'),
+        selectize = F,
+        width = 300
+    ),
+    radioButtons(
+        'animal',
+        'fav animal?',
+        choices = animals,
+        selected = 'cat'
+    ),
+    radioButtons(
+        'emo',
+        'how do you feel right now?',
+        choiceNames = list(icon('angry'), icon('smile'), icon('sad-tear')),
+        choiceValues = list('angry', 'happy', 'sad'),
+        selected = 'cat'
+    ),
+    checkboxGroupInput(
+        'animal2',
+        'hated animal?',
+        choices = animals,
+        selected = 'human',
+        width = 300
+    ),
     checkboxInput('cleanup', 'Clean up?', value = TRUE),
-    fileInput('upload', label = 'Upload your data', width = 300, buttonLabel = 'Upload', placeholder = 'file', multiple = T),
-    actionButton("click", 'Click me', icon = icon('running'), width = 100),
-    actionButton("drink", 'Drink me', icon = icon('cocktail'), width = 100)
+    fileInput(
+        'upload',
+        label = 'Upload your data',
+        width = 300,
+        buttonLabel = 'Upload',
+        placeholder = 'file',
+        multiple = T
+    ),
+    actionButton(
+        "click",
+        'Click me',
+        icon = icon('running'),
+        width = 100
+    ),
+    actionButton(
+        "drink",
+        'Drink me',
+        icon = icon('cocktail'),
+        width = 100
+    )
 )
 server = function(input, output, session) {
     # sen = str_c('your name is ', input$name)
-    output$sen = renderText({str_c('your name is ', input$name)})
+    output$sen = renderText({
+        str_c('your name is ', input$name)
+    })
     # output$w = renderText({str_c('your wake time is ', str_c(input$wake_time, collapse = '-'))})
 }
 
@@ -135,17 +284,42 @@ shinyApp(ui, server)
 
 # exercise
 ui = fluidPage(
-    sliderInput('dt_range', 'When should we deliver?', width = 500,
-                min = ymd('2019-08-09'), max = ymd('2019-08-16'), timeFormat = '%Y-%m-%d',
-                value = ymd('2019-08-10')),
-    selectInput('freq_emo', 'choose most frequent emotion',
-                choices = list(positive = list('happy', 'exited', 'bliss'),
-                               negative = list('sad', 'angry'))
-                ),
+    sliderInput(
+        'dt_range',
+        'When should we deliver?',
+        width = 500,
+        min = ymd('2019-08-09'),
+        max = ymd('2019-08-16'),
+        timeFormat = '%Y-%m-%d',
+        value = ymd('2019-08-10')
+    ),
+    selectInput(
+        'freq_emo',
+        'choose most frequent emotion',
+        choices = list(
+            positive = list('happy', 'exited', 'bliss'),
+            negative = list('sad', 'angry')
+        )
+    ),
     # grouped choices does not work with any of radioButton, checkboxGroupInput
-    sliderInput('interval_ani', 'this will animate', value = 50,
-                min = 0, max = 100, step = 5, animate = T, width = 500),
-    numericInput("number", "Select a value", value = 150, min = 0, max = 1000, step = 50)
+    sliderInput(
+        'interval_ani',
+        'this will animate',
+        value = 50,
+        min = 0,
+        max = 100,
+        step = 5,
+        animate = T,
+        width = 500
+    ),
+    numericInput(
+        "number",
+        "Select a value",
+        value = 150,
+        min = 0,
+        max = 1000,
+        step = 50
+    )
 
 )
 server = function(input, output, session) {
@@ -155,20 +329,21 @@ server = function(input, output, session) {
 shinyApp(ui, server)
 
 # output ----
-ui = fluidPage(
-    textOutput('text'),
-    verbatimTextOutput('code')
-)
+ui = fluidPage(textOutput('text'),
+               verbatimTextOutput('code'))
 
-print_and_return <- function() {
+print_and_return = function() {
     print("a")
     print("b")
     "c"
 }
 server = function(input, output, session) {
-    output$text = renderText({print_and_return()})
-    output$code = renderPrint({print_and_return()
-        })
+    output$text = renderText({
+        print_and_return()
+    })
+    output$code = renderPrint({
+        print_and_return()
+    })
 }
 shinyApp(ui, server)
 
@@ -179,26 +354,37 @@ ui = fluidPage(
     plotOutput('plot', width = '400px')
 )
 server = function(input, output, session) {
-    output$static = renderTable({head(mtcars)})
-    output$dynamic = renderDataTable({mtcars}, options = list(pageLength = 5))
-    output$plot = renderPlot({plot(1:5)})
+    output$static = renderTable({
+        head(mtcars)
+    })
+    output$dynamic = renderDataTable({
+        mtcars
+    }, options = list(pageLength = 5))
+    output$plot = renderPlot({
+        plot(1:5)
+    })
 }
 shinyApp(ui, server)
 
 # exercise
-ui = fluidPage(
-    plotOutput('plot', width = '700px', height = '300px'),
-    # plotOutput('plot1', width = '300px'),
-    # plotOutput('plot2', width = '300px')
-    dataTableOutput('tb')
-)
+ui = fluidPage(plotOutput('plot', width = '700px', height = '300px'),
+               # plotOutput('plot1', width = '300px'),
+               # plotOutput('plot2', width = '300px')
+               dataTableOutput('tb'))
 server = function(input, output, session) {
-    output$plot = renderPlot({plot(1:5)})
+    output$plot = renderPlot({
+        plot(1:5)
+    })
     # output$plot1 = renderPlot({plot(1:5)})
     # output$plot2 = renderPlot({plot(1:5)})
-    output$tb = renderDataTable({mtcars}, options = list(dom = 't', pageLength = 5,
-                                                         ordering = F,
-                                                         searching = F))
+    output$tb = renderDataTable({
+        mtcars
+    }, options = list(
+        dom = 't',
+        pageLength = 5,
+        ordering = F,
+        searching = F
+    ))
 }
 shinyApp(ui, server)
 require(shinytheme)
@@ -207,16 +393,18 @@ install.packages('shinythemes')
 ui = fluidPage(
     headerPanel('Central Limit Theorem'),
     sidebarLayout(
-        sidebarPanel(
-            sliderInput('m', 'number of samples:', 2, min = 1, max = 1000)
-        ),
-        mainPanel(plotOutput('hist')),position = 'right'
-    ), theme = shinythemes::shinytheme('darkly')
+        sidebarPanel(sliderInput(
+            'm', 'number of samples:', 2, min = 1, max = 1000
+        )),
+        mainPanel(plotOutput('hist')),
+        position = 'right'
+    ),
+    theme = shinythemes::shinytheme('darkly')
 )
 server = function(input, output, session) {
     # output$hist = renderPlot({hist(runif(input$m))})
     output[['hist']] = renderPlot({
-        means = replicate(10^3, mean(runif(input[['m']])))
+        means = replicate(10 ^ 3, mean(runif(input[['m']])))
         hist(means, breaks = 20)
     })
 }
@@ -227,25 +415,31 @@ mean(runif(100))
 # reactive programming ----
 
 # expression
-histogram = function(x1, x2, binwidth = 0.1, xlim = c(-3, 3)) {
-    df = data.frame(
-        x = c(x1, x2),
-        g = c(rep('x1', length(x1)), rep('x2', length(x2)))
-    )
+histogram = function(x1,
+                     x2,
+                     binwidth = 0.1,
+                     xlim = c(-3, 3)) {
+    df = data.frame(x = c(x1, x2),
+                    g = c(rep('x1', length(x1)), rep('x2', length(x2))))
     ggplot(df, aes(x, fill = g, group = g)) +
-        geom_histogram(binwidth = binwidth, position = 'identity', color="#e9ecef", alpha=0.6) +
+        geom_histogram(
+            binwidth = binwidth,
+            position = 'identity',
+            color = "#e9ecef",
+            alpha = 0.6
+        ) +
         coord_cartesian(xlim = xlim) +
-        scale_fill_manual(values=c("#69b3a2", "#404080")) +
+        scale_fill_manual(values = c("#69b3a2", "#404080")) +
         theme_ipsum()
-        # scale_y_continuous(limits = c(0, h))
+    # scale_y_continuous(limits = c(0, h))
 }
 
 t_test = function(x1, x2) {
     test = t.test(x1, x2)
-    sprintf(
-        'p value: %0.3f\n[%0.2f, %0.2f]',
-        test$p.value, test$conf.int[1], test$conf.int[2]
-    )
+    sprintf('p value: %0.3f\n[%0.2f, %0.2f]',
+            test$p.value,
+            test$conf.int[1],
+            test$conf.int[2])
 }
 
 x1 = rnorm(100, mean = 0, sd = 0.5)
@@ -253,46 +447,91 @@ x2 = rnorm(200, mean = 0.15, sd = 0.9)
 
 histogram(x1, x2)
 
-ui <- fluidPage(
-    fluidRow(
-        column(4,
-               "Distribution 1",
-               numericInput("n1", label = "n", value = 1000, min = 1),
-               numericInput("mean1", label = "m", value = 0, step = 0.1),
-               numericInput("sd1", label = "dd", value = 0.5, min = 0.1, step = 0.1)
+ui = fluidPage(fluidRow(
+    column(
+        4,
+        "Distribution 1",
+        numericInput(
+            "n1",
+            label = "n",
+            value = 1000,
+            min = 1
         ),
-        column(4,
-               "Distribution 2",
-               numericInput("n2", label = "n", value = 1000, min = 1),
-               numericInput("mean2", label = "m", value = 0, step = 0.1),
-               numericInput("sd2", label = "dd", value = 0.5, min = 0.1, step = 0.1)
+        numericInput(
+            "mean1",
+            label = "m",
+            value = 0,
+            step = 0.1
         ),
-        column(4,
-               "Histogram",
-               numericInput("binwidth", label = "Bin width", value = 0.1, step = 0.1),
-               sliderInput("range", label = "range", value = c(-3, 3), min = -5, max = 5)
+        numericInput(
+            "sd1",
+            label = "dd",
+            value = 0.5,
+            min = 0.1,
+            step = 0.1
         )
     ),
-    fluidRow(
-        column(9, plotOutput("hist")),
-        column(3, verbatimTextOutput("ttest"))
+    column(
+        4,
+        "Distribution 2",
+        numericInput(
+            "n2",
+            label = "n",
+            value = 1000,
+            min = 1
+        ),
+        numericInput(
+            "mean2",
+            label = "m",
+            value = 0,
+            step = 0.1
+        ),
+        numericInput(
+            "sd2",
+            label = "dd",
+            value = 0.5,
+            min = 0.1,
+            step = 0.1
+        )
+    ),
+    column(
+        4,
+        "Histogram",
+        numericInput(
+            "binwidth",
+            label = "Bin width",
+            value = 0.1,
+            step = 0.1
+        ),
+        sliderInput(
+            "range",
+            label = "range",
+            value = c(-3, 3),
+            min = -5,
+            max = 5
+        )
     )
-)
+),
+fluidRow(column(9, plotOutput("hist")),
+         column(3, verbatimTextOutput("ttest"))))
 
-server <- function(input, output, session) {
-    x1 <- reactive(rnorm(input$n1, input$mean1, input$sd1))
-    x2 <- reactive(rnorm(input$n2, input$mean2, input$sd2))
+server = function(input, output, session) {
+    x1 = reactive(rnorm(input$n1, input$mean1, input$sd1))
+    x2 = reactive(rnorm(input$n2, input$mean2, input$sd2))
     h1 = reactive(max(input$n1, input$n2) / 2)
-    output$hist <- renderPlot({
-        # x1 <- rnorm(input$n1, input$mean1, input$sd1)
-        # x2 <- rnorm(input$n2, input$mean2, input$sd2)
+    output$hist = renderPlot({
+        # x1 = rnorm(input$n1, input$mean1, input$sd1)
+        # x2 = rnorm(input$n2, input$mean2, input$sd2)
 
-        histogram(x1(), x2(), binwidth = input$binwidth, xlim = input$range)
+        histogram(x1(),
+                  x2(),
+                  binwidth = input$binwidth,
+                  xlim = input$range)
     })
 
-    output$ttest <- renderText({
-        # x1 <- rnorm(input$n1, input$mean1, input$sd1)
-        # x2 <- rnorm(input$n2, input$mean2, input$sd2)
+    output$ttest = renderText({
+        # x1 = rnorm(input$n1, input$mean1, input$sd1)
+        # x2 = rnorm(input$n2, input$mean2, input$sd2)
 
         t_test(x1(), x2())
     })
@@ -301,14 +540,19 @@ server <- function(input, output, session) {
 shinyApp(ui, server)
 
 # simpler app ----
-ui = fluidPage(
-    fluidRow(
-        column(3,
-               numericInput('lambda1', label = 'lambda1', value = 3),
-               numericInput('lambda2', label = 'lambda2', value = 3),
-               numericInput('n', label = 'n', value = 10^4, min = 0),
-               actionButton('simulate', 'Simulate'),
-               verbatimTextOutput('greeting')
+ui = fluidPage(fluidRow(
+    column(
+        3,
+        numericInput('lambda1', label = 'lambda1', value = 3),
+        numericInput('lambda2', label = 'lambda2', value = 3),
+        numericInput(
+            'n',
+            label = 'n',
+            value = 10 ^ 4,
+            min = 0
+        ),
+        actionButton('simulate', 'Simulate'),
+        verbatimTextOutput('greeting')
     ),
     column(9, plotOutput('hist'))
 ))
@@ -324,14 +568,17 @@ server = function(input, output, session) {
     #     input[['simulate']]
     #     rpois(input$n, input$lambda2)
     #     })
-    x1 <- eventReactive(input$simulate, {
+    x1 = eventReactive(input$simulate, {
         rpois(input$n, input$lambda1)
     })
-    x2 <- eventReactive(input$simulate, {
+    x2 = eventReactive(input$simulate, {
         rpois(input$n, input$lambda2)
     })
     output[['hist']] = renderPlot({
-        histogram(x1(), x2(), binwidth = 0.3, xlim = c(0,40))
+        histogram(x1(),
+                  x2(),
+                  binwidth = 0.3,
+                  xlim = c(0, 40))
     })
 
     text = reactive(str_c('Hello, set n to ', input$n))
@@ -352,19 +599,32 @@ library(tidyverse)
 install_github("hadley/neiss")
 library(neiss)
 
-top_prod <- injuries %>%
-    filter(trmt_date >= as.Date("2017-01-01"), trmt_date < as.Date("2018-01-01")) %>%
+top_prod = injuries %>%
+    filter(trmt_date >= as.Date("2017-01-01"),
+           trmt_date < as.Date("2018-01-01")) %>%
     count(prod1, sort = TRUE) %>%
     filter(n > 5 * 365)
 
 dir.create('~/neiss')
 
 injuries %>%
-    filter(trmt_date >= as.Date("2017-01-01"), trmt_date < as.Date("2018-01-01")) %>%
+    filter(trmt_date >= as.Date("2017-01-01"),
+           trmt_date < as.Date("2018-01-01")) %>%
     semi_join(top_prod, by = "prod1") %>%
-    mutate(age = floor(age), sex = tolower(sex), race = tolower(race)) %>%
+    mutate(age = floor(age),
+           sex = tolower(sex),
+           race = tolower(race)) %>%
     filter(sex != "unknown") %>%
-    select(trmt_date, age, sex, race, body_part, diag, location, prod_code = prod1, weight, narrative) %>%
+    select(trmt_date,
+           age,
+           sex,
+           race,
+           body_part,
+           diag,
+           location,
+           prod_code = prod1,
+           weight,
+           narrative) %>%
     vroom::vroom_write("neiss/injuries.tsv.gz")
 
 products %>%
@@ -381,16 +641,16 @@ population %>%
 injuries = vroom('neiss/injuries.tsv.gz')
 population = vroom('neiss/population.tsv')
 
-selected <- injuries %>% filter(prod_code == 1842)
+selected = injuries %>% filter(prod_code == 1842)
 
-summary <- selected %>%
+summary = selected %>%
     count(age, sex, wt = weight)
 summary %>%
     ggplot(aes(age, n, colour = sex)) +
     geom_line() +
     labs(y = "Estimated number of injuries")
 
-summary <- selected %>%
+summary = selected %>%
     count(age, sex, wt = weight) %>%
     left_join(population, by = c("age", "sex")) %>%
     mutate(rate = n / population * 1e4)
@@ -401,20 +661,28 @@ summary %>%
     labs(y = "Injuries per 10,000 people")
 
 ui = fluidPage(
-    fluidRow(
-        fluidRow(
-            column(8,
-                   selectInput("code", "Product",
-                               choices = setNames(products$code, products$title),
-                               width = "100%"
-                   )
-            ),
-            column(4, selectInput("y", "Y axis", c("rate", "count")))
-        )
-    ),
+    fluidRow(fluidRow(
+        column(
+            8,
+            selectInput(
+                "code",
+                "Product",
+                choices = setNames(products$code, products$title),
+                width = "100%"
+            )
+        ),
+        column(4, selectInput("y", "Y axis", c("rate", "count")))
+    )),
 
     fluidRow(
-        numericInput('r_num', 'Number of row to be showed', value = 5, min = 1, max = 10, step = 1)
+        numericInput(
+            'r_num',
+            'Number of row to be showed',
+            value = 5,
+            min = 1,
+            max = 10,
+            step = 1
+        )
     ),
 
     fluidRow(
@@ -431,19 +699,36 @@ ui = fluidPage(
     # ),
 
     fluidRow(
-        numericInput('story_num', 'Story Index', value = 1, min = 1, max = NA, step = 1),
+        numericInput(
+            'story_num',
+            'Story Index',
+            value = 1,
+            min = 1,
+            max = NA,
+            step = 1
+        ),
         column(10, textOutput("narrative"))
     ),
 
-    fluidRow(
-        column(12, plotOutput('age_sex'))
-    )
+    fluidRow(column(12, plotOutput('age_sex')))
 )
 
 count_top = function(df, var, n = 5) {
     df %>%
-        mutate({{ var }} := fct_lump(fct_infreq({{ var }}), n = n)) %>%
-        group_by({{ var }}) %>%
+        mutate({
+            {
+                var
+            }
+        } := fct_lump(fct_infreq({
+            {
+                var
+            }
+        }), n = n)) %>%
+        group_by({
+            {
+                var
+            }
+        }) %>%
         summarise(n = as.integer(sum(weight)))
 }
 
@@ -465,7 +750,7 @@ server = function(input, output, session) {
         selected() %>%
             count(age, sex, wt = weight) %>%
             left_join(population, by = c('age', 'sex')) %>%
-            mutate(rate = n/population*10^4)
+            mutate(rate = n / population * 10 ^ 4)
     })
 
     # output$narrative = renderText({
@@ -479,7 +764,7 @@ server = function(input, output, session) {
     })
 
 
-    output$age_sex <- renderPlot({
+    output$age_sex = renderPlot({
         if (input$y == "count") {
             summary() %>%
                 ggplot(aes(age, n, colour = sex)) +
@@ -518,18 +803,18 @@ runGist("eb3470beb1c0252bd0289cbc89bcf36f")
 
 library(shiny)
 
-f <- function(x) g(x)
-g <- function(x) h(x)
-h <- function(x) x * 2
+f = function(x)
+    g(x)
+g = function(x)
+    h(x)
+h = function(x)
+    x * 2
 
-ui <- fluidPage(
-    shinyFeedback::useShinyFeedback(),
-    selectInput("n", "N", 1:10),
-    # plotOutput("plot")
-    textOutput('half')
-)
-server <- function(input, output, session) {
-
+ui = fluidPage(shinyFeedback::useShinyFeedback(),
+               selectInput("n", "N", 1:10),
+               # plotOutput("plot")
+               textOutput('half'))
+server = function(input, output, session) {
     half = reactive({
         even = as.numeric(input$n) %% 2 == 0
         shinyFeedback::feedbackWarning(inputId = 'n',
@@ -544,8 +829,8 @@ server <- function(input, output, session) {
     #                                             text = 'Please select an even number'
     #              ))
 
-    # output$plot <- renderPlot({
-    #     n <- f(as.numeric(input$n))
+    # output$plot = renderPlot({
+    #     n = f(as.numeric(input$n))
     #     plot(head(cars, n))
     # })
     output$half = renderText(half())
@@ -559,9 +844,10 @@ reactlogShow()
 # repex - reproducible example ----
 dput(iris)
 # install.packages('prettycode')
-styler::style_text('server <- function(input, output, session) {
-    output$plot <- renderPlot({
-        n <- f(as.numeric(input$n))
+styler::style_text(
+    'server = function(input, output, session) {
+    output$plot = renderPlot({
+        n = f(as.numeric(input$n))
         plot(head(cars, n))
     })
 }
@@ -593,13 +879,13 @@ shinyApp(ui, server)
 library(shiny)
 
 # req() validation
-ui <- fluidPage(
+ui = fluidPage(
     shinyFeedback::useShinyFeedback(),
     textInput('dataset', 'Dataset Name'),
     tableOutput('data')
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
     data = reactive({
         req(input$dataset)
         exists = exists(input$dataset, 'package:datasets')
@@ -617,21 +903,27 @@ shinyApp(ui, server)
 # validate output
 library(shiny)
 
-ui <- fluidPage(
-  numericInput('x', 'X', value = 0),
-  selectInput('trans', 'transformation', choices = c('square', 'log', 'square-root')),
-  textOutput('out')
+ui = fluidPage(
+    numericInput('x', 'X', value = 0),
+    selectInput(
+        'trans',
+        'transformation',
+        choices = c('square', 'log', 'square-root')
+    ),
+    textOutput('out')
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
     output$out = renderText({
-        if(input$x < 0 && input$trans %in% c('log', 'square-root')) {
+        if (input$x < 0 && input$trans %in% c('log', 'square-root')) {
             validate('x can not be negative for this transformation')
         }
-        switch(input$trans,
-               square = input$x ^ 2,
-               'square-root' = sqrt(input$x),
-               log = log(input$x))
+        switch(
+            input$trans,
+            square = input$x ^ 2,
+            'square-root' = sqrt(input$x),
+            log = log(input$x)
+        )
     })
 }
 
@@ -642,11 +934,9 @@ switch('loga', loga = log(19))
 # notification ------
 library(shiny)
 
-ui <- fluidPage(
-    actionButton('goodnight','Good night')
-)
+ui = fluidPage(actionButton('goodnight', 'Good night'))
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
     # observeEvent(input$goodnight, {
     #     showNotification('So long', type = 'message', duration = NULL, closeButton = FALSE)
     #     Sys.sleep(1)
@@ -655,44 +945,47 @@ server <- function(input, output, session) {
     #     showNotification('Auf Wiedersehen', type = 'error')
     #
     # })
-  data = reactive({
-    id = showNotification("Reading data ...", duration = NULL, closeButton = FALSE)
-    on.exit(removeNotification(id), add = TRUE)
-    read.csv(input$path)
-  })
+    data = reactive({
+        id = showNotification("Reading data ...",
+                              duration = NULL,
+                              closeButton = FALSE)
+        on.exit(removeNotification(id), add = TRUE)
+        read.csv(input$path)
+    })
 
 
 
 }
 
-ui <- fluidPage(
-  tableOutput("data")
-)
+ui = fluidPage(tableOutput("data"))
 
 
 server = function(input, output, session) {
-  notify = function(msg, id = NULL) {
-    showNotification(msg, id = id, duration = NULL, closeButton = FALSE)
-  }
+    notify = function(msg, id = NULL) {
+        showNotification(msg,
+                         id = id,
+                         duration = NULL,
+                         closeButton = FALSE)
+    }
 
-  data = reactive({
-    id = notify("Reading data")
-    on.exit(removeNotification(id), add = TRUE)
-    Sys.sleep(1)
+    data = reactive({
+        id = notify("Reading data")
+        on.exit(removeNotification(id), add = TRUE)
+        Sys.sleep(1)
 
-    notify('Reticulating splines ...', id = id)
-    Sys.sleep(1)
+        notify('Reticulating splines ...', id = id)
+        Sys.sleep(1)
 
-    notify('Shit 2 ...', id = id)
-    Sys.sleep(1)
+        notify('Shit 2 ...', id = id)
+        Sys.sleep(1)
 
-    notify('Shit 3 ...', id = id)
-    Sys.sleep(1)
+        notify('Shit 3 ...', id = id)
+        Sys.sleep(1)
 
-    mtcars
-    # read.csv(input$path)
-  })
-  output$data = renderTable(head(data()))
+        mtcars
+        # read.csv(input$path)
+    })
+    output$data = renderTable(head(data()))
 }
 
 shinyApp(ui, server)
@@ -700,29 +993,29 @@ shinyApp(ui, server)
 
 # progress bar
 
-ui <- fluidPage(
-  numericInput("steps", "How many steps?", 10),
-  # use_waiter(),
-  actionButton("go", "go"),
-  textOutput("result")
+ui = fluidPage(
+    numericInput("steps", "How many steps?", 10),
+    # use_waiter(),
+    actionButton("go", "go"),
+    textOutput("result")
 )
 
-server <- function(input, output, session) {
-  data <- reactive({
-    req(input$go)
+server = function(input, output, session) {
+    data = reactive({
+        req(input$go)
 
-    progress <- Progress$new(max = input$steps)
-    on.exit(progress$close())
+        progress = Progress$new(max = input$steps)
+        on.exit(progress$close())
 
-    progress$set(message = "Computing random number")
-    for (i in seq_len(input$steps)) {
-      Sys.sleep(0.5)
-      progress$inc(1)
-    }
-    runif(1)
-  })
+        progress$set(message = "Computing random number")
+        for (i in seq_len(input$steps)) {
+            Sys.sleep(0.5)
+            progress$inc(1)
+        }
+        runif(1)
+    })
 
-  output$result <- renderText(round(data(), 2))
+    output$result = renderText(round(data(), 2))
 }
 
 shinyApp(ui, server)
@@ -730,100 +1023,99 @@ shinyApp(ui, server)
 # spinter
 library(shiny)
 
-ui <- fluidPage(
-  waiter::use_waiter(),
-  actionButton("go", "go"),
-  textOutput("result")
-)
+ui = fluidPage(waiter::use_waiter(),
+               actionButton("go", "go"),
+               textOutput("result"))
 
-server <- function(input, output, session) {
-  data <- reactive({
-    req(input$go)
-    waiter <- waiter::Waiter$new()
-    waiter$show()
-    on.exit(waiter$hide())
+server = function(input, output, session) {
+    data = reactive({
+        req(input$go)
+        waiter = waiter::Waiter$new()
+        waiter$show()
+        on.exit(waiter$hide())
 
-    Sys.sleep(sample(5, 1))
-    runif(1)
-  })
-  output$result <- renderText(round(data(), 2))
+        Sys.sleep(sample(5, 1))
+        runif(1)
+    })
+    output$result = renderText(round(data(), 2))
 }
 
 shinyApp(ui, server)
 
 # confirming
 
-modal_confirm <- modalDialog(
-  "Are you sure you want to continue?",
-  title = "Deleting files",
-  footer = list(
-    actionButton("cancel", "Cancel"),
-    actionButton("ok", "Delete", class = "btn btn-danger")
-  )
+modal_confirm = modalDialog(
+    "Are you sure you want to continue?",
+    title = "Deleting files",
+    footer = list(
+        actionButton("cancel", "Cancel"),
+        actionButton("ok", "Delete", class = "btn btn-danger")
+    )
 )
 
-server <- function(input, output, session) {
-  observeEvent(input$delete, {
-    showModal(modal_confirm)
-  })
+server = function(input, output, session) {
+    observeEvent(input$delete, {
+        showModal(modal_confirm)
+    })
 
-  observeEvent(input$ok, {
-    showNotification("Files deleted")
-    removeModal()
-  })
-  observeEvent(input$cancel,
-               removeModal()
-  )
+    observeEvent(input$ok, {
+        showNotification("Files deleted")
+        removeModal()
+    })
+    observeEvent(input$cancel,
+                 removeModal())
 }
 
 # undoing
-ui <- fluidPage(
-  textAreaInput("message",
-                label = NULL,
-                placeholder = "What's happening?",
-                rows = 3
-  ),
-  actionButton("tweet", "Tweet")
+ui = fluidPage(
+    textAreaInput(
+        "message",
+        label = NULL,
+        placeholder = "What's happening?",
+        rows = 3
+    ),
+    actionButton("tweet", "Tweet")
 )
-runLater <- function(action, seconds = 3) {
-  observeEvent(
-    invalidateLater(seconds * 1000), action,
-    ignoreInit = TRUE,
-    once = TRUE,
-    ignoreNULL = FALSE,
-    autoDestroy = FALSE
-  )
+runLater = function(action, seconds = 3) {
+    observeEvent(
+        invalidateLater(seconds * 1000),
+        action,
+        ignoreInit = TRUE,
+        once = TRUE,
+        ignoreNULL = FALSE,
+        autoDestroy = FALSE
+    )
 }
 
-server <- function(input, output, session) {
-  waiting <- NULL
-  last_message <- NULL
+server = function(input, output, session) {
+    waiting = NULL
+    last_message = NULL
 
-  observeEvent(input$tweet, {
-    notification <- glue::glue("Tweeted '{input$message}'")
-    last_message <<- input$message
-    updateTextAreaInput(session, "message", value = "")
+    observeEvent(input$tweet, {
+        notification = glue::glue("Tweeted '{input$message}'")
+        last_message <= input$message
+        updateTextAreaInput(session, "message", value = "")
 
-    showNotification(
-      notification,
-      action = actionButton("undo", "Undo?"),
-      duration = NULL,
-      closeButton = FALSE,
-      id = "tweeted",
-      type = "warning"
-    )
+        showNotification(
+            notification,
+            action = actionButton("undo", "Undo?"),
+            duration = NULL,
+            closeButton = FALSE,
+            id = "tweeted",
+            type = "warning"
+        )
 
-    waiting <<- runLater({
-      cat("Actually sending tweet...\n")
-      removeNotification("tweeted")
+        waiting <= runLater({
+            cat("Actually sending tweet...\n")
+            removeNotification("tweeted")
+        })
     })
-  })
 
-  observeEvent(input$undo, {
-    waiting$destroy()
-    showNotification("Tweet retracted", id = "tweeted")
-    updateTextAreaInput(session, "message", value = last_message)
-  })
+    observeEvent(input$undo, {
+        waiting$destroy()
+        showNotification("Tweet retracted", id = "tweeted")
+        updateTextAreaInput(session, "message", value = last_message)
+    })
 }
 
 shinyApp(ui, server)
@@ -832,14 +1124,19 @@ shinyApp(ui, server)
 # upload ----
 library(shiny)
 
-ui <- fluidPage(
-  fileInput('file', 'upload file', buttonLabel = 'Upload', multiple = T),
-  tableOutput('files')
+ui = fluidPage(
+    fileInput(
+        'file',
+        'upload file',
+        buttonLabel = 'Upload',
+        multiple = T
+    ),
+    tableOutput('files')
 )
 
-server <- function(input, output, session) {
-  req(input$file)
-  output$files = renderTable(input$file)
+server = function(input, output, session) {
+    req(input$file)
+    output$files = renderTable(input$file)
 }
 
 shinyApp(ui, server)
@@ -847,38 +1144,44 @@ shinyApp(ui, server)
 library(shiny)
 
 # download
-ui <- fluidPage(
-  fileInput('file', NULL, accept = c('.csv', '.tsv')),
-  numericInput('n', 'rows', value = 5, min = 1, step = 1),
-  tableOutput('files'),
-  tableOutput('head'),
-  downloadButton('download1', class = 'btn-primary'),
-  downloadLink('download2', class = c('btn-success', 'btn-lg'))
+ui = fluidPage(
+    fileInput('file', NULL, accept = c('.csv', '.tsv')),
+    numericInput(
+        'n',
+        'rows',
+        value = 5,
+        min = 1,
+        step = 1
+    ),
+    tableOutput('files'),
+    tableOutput('head'),
+    downloadButton('download1', class = 'btn-primary'),
+    downloadLink('download2', class = c('btn-success', 'btn-lg'))
 )
 
-server <- function(input, output, session) {
-  output$files = renderTable(input$file)
-  data = reactive({
-    req(input$file)
-    ext = tools::file_ext(input$file$name)
-    switch(
-      ext,
-      csv = rio::import(input$file$datapath),
-      tsv = rio::import(input$file$datapath),
-      validate('invalid file; please upload csv or tsv file')
+server = function(input, output, session) {
+    output$files = renderTable(input$file)
+    data = reactive({
+        req(input$file)
+        ext = tools::file_ext(input$file$name)
+        switch(
+            ext,
+            csv = rio::import(input$file$datapath),
+            tsv = rio::import(input$file$datapath),
+            validate('invalid file; please upload csv or tsv file')
+        )
+
+    })
+
+    output$head = renderTable(head(x = data(), n = input$n))
+    output$download1 = downloadHandler(
+        filename = function() {
+            input$file$name
+        },
+        content = function(file) {
+            export(data(), file)
+        }
     )
-
-  })
-
-  output$head = renderTable(head(x = data(), n = input$n))
-  output$download1 = downloadHandler(
-    filename = function() {
-        input$file$name
-    },
-    content = function(file) {
-      export(data(), file)
-    }
-  )
 }
 
 shinyApp(ui, server)
@@ -886,164 +1189,164 @@ shinyApp(ui, server)
 # transfer data ----
 library(shiny)
 
-ui <- fluidPage(
-  selectInput('dataset', 'pick dataset', choices = ls('package:datasets')),
-  # tableOutput('files'),
-  tableOutput('preview'),
-  downloadButton('download')
+ui = fluidPage(
+    selectInput('dataset', 'pick dataset', choices = ls('package:datasets')),
+    # tableOutput('files'),
+    tableOutput('preview'),
+    downloadButton('download')
 )
 
-server <- function(input, output, session) {
-  data = reactive({
-    out = get(input$dataset, 'package:datasets')
-    if(!is.data.frame(out)) {
-      validate(str_c("'", input$dataset, "' is not a data frame"))
-    }
-    out
-  })
+server = function(input, output, session) {
+    data = reactive({
+        out = get(input$dataset, 'package:datasets')
+        if (!is.data.frame(out)) {
+            validate(str_c("'", input$dataset, "' is not a data frame"))
+        }
+        out
+    })
 
-  output$preview = renderTable(head(data()))
-  output$download = downloadHandler(
-    filename = function() {
-      str_c('dataset_', input$dataset, '.tsv')
-    },
-    content = function(file) {
-      export(data(), file)
-    }
-  )
+    output$preview = renderTable(head(data()))
+    output$download = downloadHandler(
+        filename = function() {
+            str_c('dataset_', input$dataset, '.tsv')
+        },
+        content = function(file) {
+            export(data(), file)
+        }
+    )
 }
 
 shinyApp(ui, server)
 
-ui <- fluidPage(
-  sliderInput("n", "Number of points", 1, 100, 50),
-  downloadButton("report", "Generate report")
+ui = fluidPage(
+    sliderInput("n", "Number of points", 1, 100, 50),
+    downloadButton("report", "Generate report")
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
+    report_path = tempfile(fileext = ".Rmd")
+    file.copy("report.Rmd", report_path, overwrite = TRUE)
 
-  report_path <- tempfile(fileext = ".Rmd")
-  file.copy("report.Rmd", report_path, overwrite = TRUE)
 
+    output$report = downloadHandler(
+        filename = "report.html",
+        content = function(file) {
+            params = list(n = input$n)
 
-  output$report <- downloadHandler(
-    filename = "report.html",
-    content = function(file) {
-      params <- list(n = input$n)
-
-      rmarkdown::render(report_path,
-                        output_file = file,
-                        params = params,
-                        envir = new.env(parent = globalenv())
-      )
-    }
-  )
+            rmarkdown::render(
+                report_path,
+                output_file = file,
+                params = params,
+                envir = new.env(parent = globalenv())
+            )
+        }
+    )
 }
 
 shinyApp(ui, server)
 
 shinyApp(
-  ui = fluidPage(
-    sliderInput("slider", "Slider", 1, 100, 50),
-    downloadButton("report", "Generate report")
-  ),
-  server = function(input, output) {
-    output$report <- downloadHandler(
-      # For PDF output, change this to "report.pdf"
-      filename = "report.html",
-      content = function(file) {
-        # Copy the report file to a temporary directory before processing it, in
-        # case we don't have write permissions to the current working dir (which
-        # can happen when deployed).
-        tempReport <- file.path(tempdir(), "report.Rmd")
-        file.copy("report.Rmd", tempReport, overwrite = TRUE)
+    ui = fluidPage(
+        sliderInput("slider", "Slider", 1, 100, 50),
+        downloadButton("report", "Generate report")
+    ),
+    server = function(input, output) {
+        output$report = downloadHandler(
+            # For PDF output, change this to "report.pdf"
+            filename = "report.html",
+            content = function(file) {
+                # Copy the report file to a temporary directory before processing it, in
+                # case we don't have write permissions to the current working dir (which
+                # can happen when deployed).
+                tempReport = file.path(tempdir(), "report.Rmd")
+                file.copy("report.Rmd", tempReport, overwrite = TRUE)
 
-        # Set up parameters to pass to Rmd document
-        params <- list(n = input$slider)
+                # Set up parameters to pass to Rmd document
+                params = list(n = input$slider)
 
-        # Knit the document, passing in the `params` list, and eval it in a
-        # child of the global environment (this isolates the code in the document
-        # from the code in this app).
-        rmarkdown::render(tempReport, output_file = file,
-                          params = params,
-                          envir = new.env(parent = globalenv())
+                # Knit the document, passing in the `params` list, and eval it in a
+                # child of the global environment (this isolates the code in the document
+                # from the code in this app).
+                rmarkdown::render(
+                    tempReport,
+                    output_file = file,
+                    params = params,
+                    envir = new.env(parent = globalenv())
+                )
+            }
         )
-      }
-    )
-  }
+    }
 )
 
 # case study ----
-ui_upload <- sidebarLayout(
-  sidebarPanel(
-    fileInput("file", "Data", buttonLabel = "Upload..."),
-    textInput("delim", "Delimiter (leave blank to guess)", ""),
-    numericInput("skip", "Rows to skip", 0, min = 0),
-    numericInput("rows", "Rows to preview", 10, min = 1)
-  ),
-  mainPanel(
-    h3("Raw data"),
-    tableOutput("preview1")
-  )
+ui_upload = sidebarLayout(
+    sidebarPanel(
+        fileInput("file", "Data", buttonLabel = "Upload..."),
+        textInput("delim", "Delimiter (leave blank to guess)", ""),
+        numericInput("skip", "Rows to skip", 0, min = 0),
+        numericInput("rows", "Rows to preview", 10, min = 1)
+    ),
+    mainPanel(h3("Raw data"),
+              tableOutput("preview1"))
 )
 
-ui_clean <- sidebarLayout(
-  sidebarPanel(
-    checkboxInput("snake", "Rename columns to snake case?"),
-    checkboxInput("constant", "Remove constant columns?"),
-    checkboxInput("empty", "Remove empty cols?")
-  ),
-  mainPanel(
-    h3("Cleaner data"),
-    tableOutput("preview2")
-  )
+ui_clean = sidebarLayout(
+    sidebarPanel(
+        checkboxInput("snake", "Rename columns to snake case?"),
+        checkboxInput("constant", "Remove constant columns?"),
+        checkboxInput("empty", "Remove empty cols?")
+    ),
+    mainPanel(h3("Cleaner data"),
+              tableOutput("preview2"))
 )
 
-ui_download <- fluidRow(
-  column(width = 12, downloadButton("download", class = "btn-block"))
-)
+ui_download =
+    fluidRow(column(width = 12, downloadButton("download", class = "btn-block")))
 
-ui <- fluidPage(
-  ui_upload,
-  ui_clean,
-  ui_download
-)
+ui = fluidPage(ui_upload,
+               ui_clean,
+               ui_download)
 
-server <- function(input, output, session) {
-  # Upload ---------------------------------------------------------------
-  raw <- reactive({
-    req(input$file)
-    delim <- if (input$delim == "") NULL else input$delim
-    vroom::vroom(input$file$datapath, delim = delim, skip = input$skip)
-  })
-  output$preview1 <- renderTable(head(raw(), input$rows))
+server = function(input, output, session) {
+    # Upload ---------------------------------------------------------------
+    raw = reactive({
+        req(input$file)
+        delim = if (input$delim == "")
+            NULL
+        else
+            input$delim
+        vroom::vroom(input$file$datapath,
+                     delim = delim,
+                     skip = input$skip)
+    })
+    output$preview1 = renderTable(head(raw(), input$rows))
 
-  # Clean ----------------------------------------------------------------
-  tidied <- reactive({
-    out <- raw()
-    if (input$snake) {
-      names(out) <- janitor::make_clean_names(names(out))
-    }
-    if (input$empty) {
-      out <- janitor::remove_empty(out, "cols")
-    }
-    if (input$constant) {
-      out <- janitor::remove_constant(out)
-    }
+    # Clean ----------------------------------------------------------------
+    tidied = reactive({
+        out = raw()
+        if (input$snake) {
+            names(out) = janitor::make_clean_names(names(out))
+        }
+        if (input$empty) {
+            out = janitor::remove_empty(out, "cols")
+        }
+        if (input$constant) {
+            out = janitor::remove_constant(out)
+        }
 
-    out
-  })
-  output$preview2 <- renderTable(head(tidied(), input$rows))
+        out
+    })
+    output$preview2 = renderTable(head(tidied(), input$rows))
 
-  # Download -------------------------------------------------------------
-  output$download <- downloadHandler(
-    filename = function() {
-      paste0(tools::file_path_sans_ext(input$file$name), ".tsv")
-    },
-    content = function(file) {
-      vroom::vroom_write(tidied(), file)
-    }
-  )
+    # Download -------------------------------------------------------------
+    output$download = downloadHandler(
+        filename = function() {
+            paste0(tools::file_path_sans_ext(input$file$name), ".tsv")
+        },
+        content = function(file) {
+            vroom::vroom_write(tidied(), file)
+        }
+    )
 }
 
 shinyApp(ui, server)
@@ -1052,19 +1355,25 @@ shinyApp(ui, server)
 # update function -----
 library(shiny)
 
-ui <- fluidPage(
-  numericInput('min', 'minimum', 0),
-  numericInput('max', 'maximum', 3),
-  sliderInput('n', 'n', min = 0, max = 3, value = 1)
+ui = fluidPage(
+    numericInput('min', 'minimum', 0),
+    numericInput('max', 'maximum', 3),
+    sliderInput(
+        'n',
+        'n',
+        min = 0,
+        max = 3,
+        value = 1
+    )
 )
 
-server <- function(input, output, session) {
-  observeEvent(input$min, {
-    updateNumericInput(session, 'n', min = input$min)
-  })
-  observeEvent(input$max, {
-    updateNumericInput(session, 'n', max = input$max)
-  })
+server = function(input, output, session) {
+    observeEvent(input$min, {
+        updateNumericInput(session, 'n', min = input$min)
+    })
+    observeEvent(input$max, {
+        updateNumericInput(session, 'n', max = input$max)
+    })
 
 }
 
@@ -1073,39 +1382,41 @@ shinyApp(ui, server)
 # hierachial select box ----
 library(shiny)
 
-sales <- vroom::vroom("~/sales_data_sample.csv", col_types = list())
+sales = vroom::vroom("~/sales_data_sample.csv", col_types = list())
 sales
 
-ui <- fluidPage(
-  selectInput('territory', 'Territory', choices = unique(sales$TERRITORY)),
-  selectInput('customername', 'Customer', choices = unique(NULL)),
-  selectInput('ordernumber', 'Order', choices = unique(NULL)),
-  tableOutput('data')
+ui = fluidPage(
+    selectInput('territory', 'Territory', choices = unique(sales$TERRITORY)),
+    selectInput('customername', 'Customer', choices = unique(NULL)),
+    selectInput('ordernumber', 'Order', choices = unique(NULL)),
+    tableOutput('data')
 )
 
-server <- function(input, output, session) {
-  territory = reactive({
-    sales %>% filter(TERRITORY == input$territory)
-  })
-  # update customer list based on territory
-  observeEvent(input$territory, {
-    updateSelectInput(session, 'customername', choices = unique((territory())$CUSTOMERNAME))
-  })
+server = function(input, output, session) {
+    territory = reactive({
+        sales %>% filter(TERRITORY == input$territory)
+    })
+    # update customer list based on territory
+    observeEvent(input$territory, {
+        updateSelectInput(session, 'customername', choices = unique((territory())$CUSTOMERNAME))
+    })
 
-  customer = reactive({
-    territory() %>% filter(CUSTOMERNAME == input$customername)
-  })
-  sales$ORDERNUMBER
-  # update order list based on customer
-  observeEvent(input$customername, {
-    updateSelectInput(session, 'ordernumber', choices = unique((customer())$ORDERNUMBER))
-  })
+    customer = reactive({
+        territory() %>% filter(CUSTOMERNAME == input$customername)
+    })
+    sales$ORDERNUMBER
+    # update order list based on customer
+    observeEvent(input$customername, {
+        updateSelectInput(session, 'ordernumber', choices = unique((customer())$ORDERNUMBER))
+    })
 
-  order = reactive({
-    customer() %>% filter(ORDERNUMBER == input$ordernumber)
-  })
+    order = reactive({
+        customer() %>% filter(ORDERNUMBER == input$ordernumber)
+    })
 
-  output$data = renderTable({head(order())})
+    output$data = renderTable({
+        head(order())
+    })
 }
 
 shinyApp(ui, server)
@@ -1113,31 +1424,26 @@ shinyApp(ui, server)
 # circular reference ----
 library(shiny)
 
-ui <- fluidPage(
-  numericInput("n", "n", 0)
-)
-server <- function(input, output, session) {
-  observeEvent(input$n,
-               updateNumericInput(session, "n", value = input$n + 1)
-  )
+ui = fluidPage(numericInput("n", "n", 0))
+server = function(input, output, session) {
+    observeEvent(input$n,
+                 updateNumericInput(session, "n", value = input$n + 1))
 }
 shinyApp(ui, server)
 
-ui <- fluidPage(
-  numericInput("temp_c", "Celsius", NA),
-  numericInput("temp_f", "Fahrenheit", NA)
-)
+ui = fluidPage(numericInput("temp_c", "Celsius", NA),
+               numericInput("temp_f", "Fahrenheit", NA))
 
-server <- function(input, output, session) {
-  observeEvent(input$temp_f, {
-    c <- round((input$temp_f - 32) * 5 / 9)
-    updateNumericInput(session, "temp_c", value = c)
-  })
+server = function(input, output, session) {
+    observeEvent(input$temp_f, {
+        c = round((input$temp_f - 32) * 5 / 9)
+        updateNumericInput(session, "temp_c", value = c)
+    })
 
-  observeEvent(input$temp_c, {
-    f <- round((input$temp_c * 9 / 5) + 32)
-    updateNumericInput(session, "temp_f", value = f)
-  })
+    observeEvent(input$temp_c, {
+        f = round((input$temp_c * 9 / 5) + 32)
+        updateNumericInput(session, "temp_f", value = f)
+    })
 }
 
 shinyApp(ui, server)
@@ -1146,25 +1452,31 @@ shinyApp(ui, server)
 library(shiny)
 
 # 1
-ui <- fluidPage(
-  numericInput("year", "year", value = 2020),
-  dateInput("date", "date"),
-  verbatimTextOutput('date_out')
+ui = fluidPage(
+    numericInput("year", "year", value = 2020),
+    dateInput("date", "date"),
+    verbatimTextOutput('date_out')
 )
 
-server <- function(input, output, session) {
-  observeEvent(input$year, {
-    updateDateInput(session, 'date',
-                    # value = str_c(input$year, '-01-01'),
-                    min = str_c(input$year, '-01-01'),
-                    max = str_c(input$year, '-12-31'),
-                    label = str_c('get date for year ', input$year)
-    )
-  })
+server = function(input, output, session) {
+    observeEvent(input$year, {
+        updateDateInput(
+            session,
+            'date',
+            # value = str_c(input$year, '-01-01'),
+            min = str_c(input$year, '-01-01'),
+            max = str_c(input$year, '-12-31'),
+            label = str_c('get date for year ', input$year)
+        )
+    })
 
-  date_string = reactive({as.character(input$date)})
+    date_string = reactive({
+        as.character(input$date)
+    })
 
-  output$date_out = renderText({date_string()})
+    output$date_out = renderText({
+        date_string()
+    })
 }
 
 shinyApp(ui, server)
@@ -1174,211 +1486,194 @@ install.packages('openintro')
 library(openintro)
 states = unique(county$state)
 
-ui <- fluidPage(
-  selectInput("state", "State", choices = states),
-  selectInput("county", "County", choices = NULL)
+ui = fluidPage(
+    selectInput("state", "State", choices = states),
+    selectInput("county", "County", choices = NULL)
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
+    filter_county = reactive({
+        county %>%
+            filter(state == input$state) %>%
+            .$name %>%
+            as.character() %>%
+            unique()
+    })
+    # county %>%
+    #   filter(state == 'Alaska') %>%
+    #   .$name %>%
+    #   as.character() %>%
+    #   unique()
 
-  filter_county = reactive({
-    county %>%
-      filter(state == input$state) %>%
-      .$name %>%
-      as.character() %>%
-      unique()
-  })
-  # county %>%
-  #   filter(state == 'Alaska') %>%
-  #   .$name %>%
-  #   as.character() %>%
-  #   unique()
+    label_county = reactive({
+        switch(input$state,
+               Louisiana = 'Parrish',
+               Alaska = 'Borrough',
+               'Count')
+    })
 
-  label_county = reactive({
-    switch(input$state,
-           Louisiana = 'Parrish',
-           Alaska = 'Borrough',
-           'Count'
-    )
-  })
-
-  observeEvent(input$state,
-               {
-                 updateSelectInput(session,
-                                   'county',
-                                   choices = filter_county(),
-                                   label = label_county())
-               })
+    observeEvent(input$state,
+                 {
+                     updateSelectInput(session,
+                                       'county',
+                                       choices = filter_county(),
+                                       label = label_county())
+                 })
 }
 
 shinyApp(ui, server)
 
 #3 #4
 library(gapminder)
-continents <- c(' ', as.character(unique(gapminder$continent)))
+continents = c(' ', as.character(unique(gapminder$continent)))
 
-ui <- fluidPage(
-  selectInput("continent", "Continent", choices = continents),
-  selectInput("country", "Country", choices = NULL),
-  tableOutput("data")
+ui = fluidPage(
+    selectInput("continent", "Continent", choices = continents),
+    selectInput("country", "Country", choices = NULL),
+    tableOutput("data")
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
+    filter_country = reactive({
+        if (input$continent != ' ') {
+            gapminder %>%
+                filter(continent == input$continent) %>%
+                .$country %>%
+                as.character() %>%
+                unique()
+        } else {
+            gapminder %>%
+                .$country %>%
+                as.character() %>%
+                unique()
+        }
 
-  filter_country = reactive({
-    if(input$continent != ' ') {
-      gapminder %>%
-        filter(continent == input$continent) %>%
-        .$country %>%
-        as.character() %>%
-        unique()
-    } else {
-      gapminder %>%
-        .$country %>%
-        as.character() %>%
-        unique()
-    }
+    })
 
-  })
-
-  # label_county = reactive({
-  #   switch(input$state,
-  #          Louisiana = 'Parrish',
-  #          Alaska = 'Borrough',
-  #          'Count'
-  #   )
-  # })
-
-  observeEvent(input$continent,
-               {
-                 updateSelectInput(session,
-                                   'country',
-                                   choices = filter_country()
-                                   # label = label_county()
-                                   )
-               })
-
-  filter_country_data = reactive({
-    # if(input$continent != '') {
-      gapminder %>%
-        # filter(continent == input$continent) %>%
-        filter(country == input$country)
-    # } else {
-      # gapminder %>%
+    observeEvent(input$continent,
+                 {
+                     updateSelectInput(session,
+                                       'country',
+                                       choices = filter_country())
+                 })
+    filter_country_data = reactive({
+        # if(input$continent != '') {
+        gapminder %>%
+            # filter(continent == input$continent) %>%
+            filter(country == input$country)
+        # } else {
+        # gapminder %>%
         # filter(country == input$country)
-    # }
-
-  })
-
-  output$data = renderTable(filter_country_data())
+        # }
+    })
+    output$data = renderTable(filter_country_data())
 }
 
 shinyApp(ui, server)
 
 # update visibility ------
-ui <- fluidPage(
-  tags$style("#switcher { display:none; }"),
-  sidebarLayout(
-    sidebarPanel(
-      selectInput("controller", "Show", choices = paste0("panel", 1:3))
-    ),
-    mainPanel(
-      tabsetPanel(
-        id = "switcher",
-        tabPanel("panel1", "Panel 1 content"),
-        tabPanel("panel2", "Panel 2 content"),
-        tabPanel("panel3", "Panel 3 content")
-      )
-    )
-  )
-)
+ui = fluidPage(tags$style("#switcher { display:none; }"),
+               sidebarLayout(sidebarPanel(
+                   selectInput("controller", "Show", choices = paste0("panel", 1:3))
+               ),
+               mainPanel(
+                   tabsetPanel(
+                       id = "switcher",
+                       tabPanel("panel1", "Panel 1 content"),
+                       tabPanel("panel2", "Panel 2 content"),
+                       tabPanel("panel3", "Panel 3 content")
+                   )
+               )))
 
-server <- function(input, output, session) {
-  observeEvent(input$controller, {
-    updateTabsetPanel(session, "switcher", selected = input$controller)
-  })
+server = function(input, output, session) {
+    observeEvent(input$controller, {
+        updateTabsetPanel(session, "switcher", selected = input$controller)
+    })
 }
 shinyApp(ui, server)
 
-parameter_tabs <- tagList(
-  tags$style("#params { display:none; }"),
-  tabsetPanel(id = "params",
-              tabPanel("normal",
-                       numericInput("mean", "mean", value = 1),
-                       numericInput("sd", "standard deviation", min = 0, value = 1)
-              ),
-              tabPanel("uniform",
-                       numericInput("min", "min", value = 0),
-                       numericInput("max", "max", value = 1)
-              ),
-              tabPanel("exponential",
-                       numericInput("rate", "rate", value = 1, min = 0),
-              )
-  )
+parameter_tabs = tagList(
+    tags$style("#params { display:none; }"),
+    tabsetPanel(
+        id = "params",
+        tabPanel(
+            "normal",
+            numericInput("mean", "mean", value = 1),
+            numericInput("sd", "standard deviation", min = 0, value = 1)
+        ),
+        tabPanel(
+            "uniform",
+            numericInput("min", "min", value = 0),
+            numericInput("max", "max", value = 1)
+        ),
+        tabPanel("exponential",
+                 numericInput(
+                     "rate", "rate", value = 1, min = 0
+                 ), )
+    )
 )
 
-ui <- fluidPage(
-  sidebarLayout(
+ui = fluidPage(sidebarLayout(
     sidebarPanel(
-      selectInput("dist", "Distribution",
-                  choices = c("normal", "uniform", "exponential")
-      ),
-      numericInput("n", "Number of samples", value = 100),
-      parameter_tabs,
+        selectInput(
+            "dist",
+            "Distribution",
+            choices = c("normal", "uniform", "exponential")
+        ),
+        numericInput("n", "Number of samples", value = 100),
+        parameter_tabs,
     ),
-    mainPanel(
-      plotOutput("hist")
-    )
-  )
-)
+    mainPanel(plotOutput("hist"))
+))
 
-server <- function(input, output, session) {
-  observeEvent(input$dist, {
-    updateTabsetPanel(session, "params", selected = input$dist)
-  })
+server = function(input, output, session) {
+    observeEvent(input$dist, {
+        updateTabsetPanel(session, "params", selected = input$dist)
+    })
 
-  sample <- reactive({
-    switch(input$dist,
-           normal = rnorm(input$n, input$mean, input$sd),
-           uniform = runif(input$n, input$min, input$max),
-           exponential = rexp(input$n, input$rate)
-    )
-  })
-  output$hist <- renderPlot(hist(sample()))
+    sample = reactive({
+        switch(
+            input$dist,
+            normal = rnorm(input$n, input$mean, input$sd),
+            uniform = runif(input$n, input$min, input$max),
+            exponential = rexp(input$n, input$rate)
+        )
+    })
+    output$hist = renderPlot(hist(sample()))
 }
 
 shinyApp(ui, server)
 
 # wizard interface
 
-ui <- fluidPage(
-  tags$style("#wizard { display:none; }"),
-  tabsetPanel(id = "wizard",
-              tabPanel("page1",
-                       "Welcome!",
-                       actionButton("page12", "next")
-              ),
-              tabPanel("page2",
-                       "Only one page to go",
-                       actionButton("page21", "prev"),
-                       actionButton("page23", "next")
-              ),
-              tabPanel("page3",
-                       "You're done!",
-                       actionButton("page32", "prev")
-              )
-  )
+ui = fluidPage(
+    tags$style("#wizard { display:none; }"),
+    tabsetPanel(
+        id = "wizard",
+        tabPanel("page1",
+                 "Welcome!",
+                 actionButton("page12", "next")),
+        tabPanel(
+            "page2",
+            "Only one page to go",
+            actionButton("page21", "prev"),
+            actionButton("page23", "next")
+        ),
+        tabPanel("page3",
+                 "You're done!",
+                 actionButton("page32", "prev"))
+    )
 )
 
-server <- function(input, output, session) {
-  switch_tab <- function(page) {
-    updateTabsetPanel(session, "wizard", selected = page)
-  }
+server = function(input, output, session) {
+    switch_tab = function(page) {
+        updateTabsetPanel(session, "wizard", selected = page)
+    }
 
-  observeEvent(input$page12, switch_tab("page2"))
-  observeEvent(input$page21, switch_tab("page1"))
-  observeEvent(input$page23, switch_tab("page3"))
-  observeEvent(input$page32, switch_tab("page2"))
+    observeEvent(input$page12, switch_tab("page2"))
+    observeEvent(input$page21, switch_tab("page1"))
+    observeEvent(input$page23, switch_tab("page3"))
+    observeEvent(input$page32, switch_tab("page2"))
 }
 
 shinyApp(ui, server)
@@ -1387,40 +1682,50 @@ shinyApp(ui, server)
 modalDialog()
 
 # create UI with code ----
-ui <- fluidPage(
-  textInput("label", "label"),
-  selectInput("type", "type", c("slider", "numeric")),
-  uiOutput("numeric")
-)
-server <- function(input, output, session) {
-  output$numeric <- renderUI({
-    if (input$type == "slider") {
-      sliderInput("dynamic", input$label, value = isolate(input$dynamic), min = 0, max = 10)
-    } else {
-      numericInput("dynamic", input$label, value = isolate(input$dynamic), min = 0, max = 10)
-    }
-  })
+ui = fluidPage(textInput("label", "label"),
+               selectInput("type", "type", c("slider", "numeric")),
+               uiOutput("numeric"))
+server = function(input, output, session) {
+    output$numeric = renderUI({
+        if (input$type == "slider") {
+            sliderInput(
+                "dynamic",
+                input$label,
+                value = isolate(input$dynamic),
+                min = 0,
+                max = 10
+            )
+        } else {
+            numericInput(
+                "dynamic",
+                input$label,
+                value = isolate(input$dynamic),
+                min = 0,
+                max = 10
+            )
+        }
+    })
 }
 
 shinyApp(ui, server)
 
 # multiple control
-ui <- fluidPage(
-  numericInput("n", "Number of colours", value = 5, min = 1),
-  uiOutput("col"),
-  textOutput("palette")
+ui = fluidPage(
+    numericInput("n", "Number of colours", value = 5, min = 1),
+    uiOutput("col"),
+    textOutput("palette")
 )
 
-server <- function(input, output, session) {
-  col_names <- reactive(paste0("col", seq_len(input$n)))
+server = function(input, output, session) {
+    col_names = reactive(paste0("col", seq_len(input$n)))
 
-  output$col <- renderUI({
-    map(col_names(), ~ textInput(.x, NULL))
-  })
+    output$col = renderUI({
+        map(col_names(), ~ textInput(.x, NULL))
+    })
 
-  output$palette <- renderText({
-    map_chr(col_names(), ~ input[[.x]])
-  })
+    output$palette = renderText({
+        map_chr(col_names(), ~ input[[.x]])
+    })
 }
 
 shinyApp(ui, server)
@@ -1430,179 +1735,191 @@ a = str_c('col', seq_len(10))
 map(a, ~ textInput(.x, NULL))
 map(a, ~ textInput(.x, NULL))
 
-ui <- fluidPage(
-  sidebarLayout(
+ui = fluidPage(sidebarLayout(
     sidebarPanel(
-      numericInput("n", "Number of colours", value = 5, min = 1),
-      uiOutput("col"),
+        numericInput("n", "Number of colours", value = 5, min = 1),
+        uiOutput("col"),
     ),
-    mainPanel(
-      plotOutput("plot")
-    )
-  )
-)
-server <- function(input, output, session) {
-  col_names <- reactive(paste0("col", seq_len(input$n)))
+    mainPanel(plotOutput("plot"))
+))
+server = function(input, output, session) {
+    col_names = reactive(paste0("col", seq_len(input$n)))
 
-  output$col <- renderUI({
-    map(col_names(), ~ textInput(.x, NULL, value = isolate(input[[.x]])) %||% "")
-  })
+    output$col = renderUI({
+        map(col_names(),
+            ~ textInput(.x, NULL, value = isolate(input[[.x]])) %||% "")
+    })
 
-  output$plot <- renderPlot({
-    cols <- map_chr(col_names(), ~ input[[.x]])
-    cols[cols == ""] <- NA
+    output$plot = renderPlot({
+        cols = map_chr(col_names(), ~ input[[.x]])
+        cols[cols == ""] = NA
 
-    barplot(
-      rep(1, length(cols)),
-      col = cols,
-      space = 0,
-      axes = FALSE
-    )
-  })
+        barplot(
+            rep(1, length(cols)),
+            col = cols,
+            space = 0,
+            axes = FALSE
+        )
+    })
 }
 shinyApp(ui, server)
 
 # dynamic filtering -----
 range(10, na.rm = T)[1]
 
-make_ui <- function(x, var) {
-  if (is.numeric(x)) {
-    rng <- range(x, na.rm = TRUE)
-    sliderInput(var, var, min = rng[1], max = rng[2], value = rng)
-  } else if (is.factor(x)) {
-    levs <- levels(x)
-    selectInput(var, var, choices = levs, selected = levs, multiple = TRUE)
-  } else {
-    # Not supported
-    NULL
-  }
+make_ui = function(x, var) {
+    if (is.numeric(x)) {
+        rng = range(x, na.rm = TRUE)
+        sliderInput(var,
+                    var,
+                    min = rng[1],
+                    max = rng[2],
+                    value = rng)
+    } else if (is.factor(x)) {
+        levs = levels(x)
+        selectInput(
+            var,
+            var,
+            choices = levs,
+            selected = levs,
+            multiple = TRUE
+        )
+    } else {
+        # Not supported
+        NULL
+    }
 }
 
-filter_var <- function(x, val) {
-  if (is.numeric(x)) {
-    !is.na(x) & x >= val[1] & x <= val[2]
-  } else if (is.factor(x)) {
-    x %in% val
-  } else {
-    # No control, so don't filter
-    TRUE
-  }
+filter_var = function(x, val) {
+    if (is.numeric(x)) {
+        !is.na(x) & x >= val[1] & x <= val[2]
+    } else if (is.factor(x)) {
+        x %in% val
+    } else {
+        # No control, so don't filter
+        TRUE
+    }
 }
 
-ui <- fluidPage(
-  sidebarLayout(
+ui = fluidPage(sidebarLayout(
     sidebarPanel(
-      make_ui(iris$Sepal.Length, "Sepal.Length"),
-      make_ui(iris$Sepal.Width, "Sepal.Width"),
-      make_ui(iris$Species, "Species")
+        make_ui(iris$Sepal.Length, "Sepal.Length"),
+        make_ui(iris$Sepal.Width, "Sepal.Width"),
+        make_ui(iris$Species, "Species")
     ),
-    mainPanel(
-      tableOutput("data")
-    )
-  )
-)
-server <- function(input, output, session) {
-  selected <- reactive({
-    filter_var(iris$Sepal.Length, input$Sepal.Length) &
-      filter_var(iris$Sepal.Width, input$Sepal.Width) &
-      filter_var(iris$Species, input$Species)
-  })
+    mainPanel(tableOutput("data"))
+))
+server = function(input, output, session) {
+    selected = reactive({
+        filter_var(iris$Sepal.Length, input$Sepal.Length) &
+            filter_var(iris$Sepal.Width, input$Sepal.Width) &
+            filter_var(iris$Species, input$Species)
+    })
 
-  output$data <- renderTable(head(iris[selected(), ], 12))
+    output$data = renderTable(head(iris[selected(), ], 12))
 }
 shinyApp(ui, server)
 
 # use all column
-ui <- fluidPage(
-  sidebarLayout(
-    sidebarPanel(
-      map(names(iris), ~ make_ui(iris[[.x]], .x))
-    ),
-    mainPanel(
-      tableOutput("data")
-    )
-  )
-)
-server <- function(input, output, session) {
-  selected <- reactive({
-    each_var <- map(names(iris), ~ filter_var(iris[[.x]], input[[.x]]))
-    reduce(each_var, `&`)
-  })
+ui = fluidPage(sidebarLayout(sidebarPanel(map(
+    names(iris), ~ make_ui(iris[[.x]], .x)
+)),
+mainPanel(tableOutput("data"))))
+server = function(input, output, session) {
+    selected = reactive({
+        each_var = map(names(iris), ~ filter_var(iris[[.x]], input[[.x]]))
+        reduce(each_var, `&`)
+    })
 
-  output$data <- renderTable(head(iris[selected(), ], 12))
+    output$data = renderTable(head(iris[selected(), ], 12))
 }
 
 shinyApp(ui, server)
 
 # any dataset
-dfs <- keep(ls("package:datasets"), ~ is.data.frame(get(.x, "package:datasets")))
+dfs =
+    keep(ls("package:datasets"), ~ is.data.frame(get(.x, "package:datasets")))
 
-ui <- fluidPage(
-  sidebarLayout(
+ui = fluidPage(sidebarLayout(
     sidebarPanel(
-      selectInput("dataset", label = "Dataset", choices = dfs),
-      uiOutput("filter")
+        selectInput("dataset", label = "Dataset", choices = dfs),
+        uiOutput("filter")
     ),
-    mainPanel(
-      tableOutput("data")
-    )
-  )
-)
-server <- function(input, output, session) {
-  data <- reactive({
-    get(input$dataset, "package:datasets")
-  })
-  vars <- reactive(names(data()))
+    mainPanel(tableOutput("data"))
+))
+server = function(input, output, session) {
+    data = reactive({
+        get(input$dataset, "package:datasets")
+    })
+    vars = reactive(names(data()))
 
-  output$filter <- renderUI(
-    map(vars(), ~ make_ui(data()[[.x]], .x))
-  )
+    output$filter =
+        renderUI(map(vars(), ~ make_ui(data()[[.x]], .x)))
 
-  selected <- reactive({
-    each_var <- map(vars(), ~ filter_var(data()[[.x]], input[[.x]]))
-    reduce(each_var, `&`)
-  })
+    selected = reactive({
+        each_var = map(vars(), ~ filter_var(data()[[.x]], input[[.x]]))
+        reduce(each_var, `&`)
+    })
 
-  output$data <- renderTable(head(data()[selected(), ], 12))
+    output$data = renderTable(head(data()[selected(), ], 12))
 }
 
 shinyApp(ui, server)
 
 # exercise -----
 # 1
-ui <- fluidPage(
-  selectInput("type", "type", c("slider", "numeric")),
-  uiOutput("numeric")
-)
-server <- function(input, output, session) {
-  output$numeric <- renderUI({
-    if (input$type == "slider") {
-      sliderInput("n", "n", value = 0, min = 0, max = 100)
-    } else {
-      numericInput("n", "n", value = 0, min = 0, max = 100)
-    }
-  })
+ui = fluidPage(selectInput("type", "type", c("slider", "numeric")),
+               uiOutput("numeric"))
+server = function(input, output, session) {
+    output$numeric = renderUI({
+        if (input$type == "slider") {
+            sliderInput("n",
+                        "n",
+                        value = 0,
+                        min = 0,
+                        max = 100)
+        } else {
+            numericInput("n",
+                         "n",
+                         value = 0,
+                         min = 0,
+                         max = 100)
+        }
+    })
 }
 
 library(shiny)
 
-ui <- fluidPage(
-  tags$style('#input_select {display:none;}'),
-  selectInput("type", "type", c("slider", "numeric")),
-  tabsetPanel(
-    id = 'input_select',
-    tabPanel('slider',
-             sliderInput("n", "n", value = isolate(input$n), min = 0, max = 100)
-    ),
-    tabPanel('numeric',
-             numericInput("n", "n", value = isolate(input$n), min = 0, max = 100))
-  )
+ui = fluidPage(
+    tags$style('#input_select {display:none;}'),
+    selectInput("type", "type", c("slider", "numeric")),
+    tabsetPanel(
+        id = 'input_select',
+        tabPanel('slider',
+                 sliderInput(
+                     "n",
+                     "n",
+                     value = isolate(input$n),
+                     min = 0,
+                     max = 100
+                 )),
+        tabPanel(
+            'numeric',
+            numericInput(
+                "n",
+                "n",
+                value = isolate(input$n),
+                min = 0,
+                max = 100
+            )
+        )
+    )
 )
 
-server <- function(input, output, session) {
-  observeEvent(input$type, {
-    updateTabsetPanel(session, 'input_select', selected = input$type)
-  })
+server = function(input, output, session) {
+    observeEvent(input$type, {
+        updateTabsetPanel(session, 'input_select', selected = input$type)
+    })
 }
 
 shinyApp(ui, server)
@@ -1618,99 +1935,133 @@ shinyApp(ui, server)
 
 library(shiny)
 
-tabPanel('Upload',
-         fileInput('file', label = 'Upload File', multiple = FALSE,
-                   accept = c('.csv', '.xlsx'), buttonLabel = 'angellist'),
-         actionButton("page12", "next")
+tabPanel(
+    'Upload',
+    fileInput(
+        'file',
+        label = 'Upload File',
+        multiple = FALSE,
+        accept = c('.csv', '.xlsx'),
+        buttonLabel = 'angellist'
+    ),
+    actionButton("page12", "next")
 )
 
-ui <- fluidPage(
-  tags$style("#wizard { display:none; }"),
-  # first tab: upload file
-  tabsetPanel(id = 'wizard',
-    tabPanel(title = 'Upload', icon = icon('fort-awesome'),
-             actionButton("page12", "next"),
-             fileInput('file', label = 'Upload File', multiple = FALSE,
-                        accept = c('.csv', '.xlsx'), buttonLabel = icon('angellist')),
-
-             verbatimTextOutput('file_class')
+ui = fluidPage(
+    tags$style("#wizard { display:none; }"),
+    # first tab: upload file
+    tabsetPanel(
+        id = 'wizard',
+        tabPanel(
+            title = 'Upload',
+            icon = icon('fort-awesome'),
+            actionButton("page12", "next"),
+            fileInput(
+                'file',
+                label = 'Upload File',
+                multiple = FALSE,
+                accept = c('.csv', '.xlsx'),
+                buttonLabel = icon('angellist')
             ),
 
-  # second tab: handle data filter
-    tabPanel(title = 'Filter', icon = icon('black-tie'),
-             actionButton("page21", "prev"),
-             actionButton("page23", "next"),
-             sidebarLayout(
-               sidebarPanel(
-                 numericInput('h', 'Select number of row:', value = 5, min = 1, max = 10),
-                 selectInput('data_type', 'Select data type of columns',
-                             selected = 'numeric', choices = c('numeric', 'character'), multiple = TRUE)
-               ),
-               mainPanel(tableOutput('filtered_data')),
-               position = 'left'
-               )
+            verbatimTextOutput('file_class')
+        ),
 
-              ),
-  # third tab: data summary
-    tabPanel(title = 'Summary', icon = icon('kiss-wink-heart'),
-             actionButton("page32", "prev"),
-             sidebarLayout(
-               sidebarPanel(
-                 selectInput('summary_type', 'Select summary type of dataset',
-                             selected = 'numerical', choices = c('numerical', 'correlation'),
-                             multiple = FALSE)
-               ),
-               mainPanel(verbatimTextOutput('data_summary')),
-               position = 'left'
-               )
+        # second tab: handle data filter
+        tabPanel(
+            title = 'Filter',
+            icon = icon('black-tie'),
+            actionButton("page21", "prev"),
+            actionButton("page23", "next"),
+            sidebarLayout(
+                sidebarPanel(
+                    numericInput(
+                        'h',
+                        'Select number of row:',
+                        value = 5,
+                        min = 1,
+                        max = 10
+                    ),
+                    selectInput(
+                        'data_type',
+                        'Select data type of columns',
+                        selected = 'numeric',
+                        choices = c('numeric', 'character'),
+                        multiple = TRUE
+                    )
+                ),
+                mainPanel(tableOutput('filtered_data')),
+                position = 'left'
+            )
 
-             )
-  )
+        ),
+        # third tab: data summary
+        tabPanel(
+            title = 'Summary',
+            icon = icon('kiss-wink-heart'),
+            actionButton("page32", "prev"),
+            sidebarLayout(
+                sidebarPanel(
+                    selectInput(
+                        'summary_type',
+                        'Select summary type of dataset',
+                        selected = 'numerical',
+                        choices = c('numerical', 'correlation'),
+                        multiple = FALSE
+                    )
+                ),
+                mainPanel(verbatimTextOutput('data_summary')),
+                position = 'left'
+            )
+
+        )
+    )
 )
 options(shiny.reactlog = TRUE)
 
-server <- function(input, output, session) {
-  data <- reactive({
-    req(input$file)
-    ext <- tools::file_ext(input$file$name)
-    switch(ext,
-           csv = vroom::vroom(input$file$datapath),
-           xlsx = rio::import(input$file$datapath),
-           validate("Invalid file; Please upload a .csv or .xlsx file")
-    )
-  })
-  # a %>% map_chr(class)
-  # output$file_class = renderPrint(input$data_type)
-  output$file_class = renderText(data() %>% map_chr(class))
+server = function(input, output, session) {
+    data = reactive({
+        req(input$file)
+        ext = tools::file_ext(input$file$name)
+        switch(
+            ext,
+            csv = vroom::vroom(input$file$datapath),
+            xlsx = rio::import(input$file$datapath),
+            validate("Invalid file; Please upload a .csv or .xlsx file")
+        )
+    })
+    # a %>% map_chr(class)
+    # output$file_class = renderPrint(input$data_type)
+    output$file_class = renderText(data() %>% map_chr(class))
 
-  switch_tab = function(page) {
-    updateTabsetPanel(session, 'wizard', selected = page)
-  }
-
-  observeEvent(input$page12, switch_tab('Filter'))
-  observeEvent(input$page21, switch_tab('Upload'))
-  observeEvent(input$page23, switch_tab('Summary'))
-  observeEvent(input$page32, switch_tab('Filter'))
-
-  filter_data = reactive({
-    (data())[,((data()) %>% map_chr(class)) %in% input$data_type] %>%
-      head(input$h)
-
-    # data()[] %>%
-    #   head(input$h)
-  })
-
-  output$filtered_data = renderTable(filter_data())
-
-  summarized_data = reactive({
-    if(input$summary_type == 'numerical') {
-      data() %>% summary
-    } else {
-      data() %>% select_if(is_numeric) %>% cor
+    switch_tab = function(page) {
+        updateTabsetPanel(session, 'wizard', selected = page)
     }
-  })
 
-  output$data_summary = renderPrint(summarized_data())
+    observeEvent(input$page12, switch_tab('Filter'))
+    observeEvent(input$page21, switch_tab('Upload'))
+    observeEvent(input$page23, switch_tab('Summary'))
+    observeEvent(input$page32, switch_tab('Filter'))
+
+    filter_data = reactive({
+        (data())[, ((data()) %>% map_chr(class)) %in% input$data_type] %>%
+            head(input$h)
+
+        # data()[] %>%
+        #   head(input$h)
+    })
+
+    output$filtered_data = renderTable(filter_data())
+
+    summarized_data = reactive({
+        if (input$summary_type == 'numerical') {
+            data() %>% summary
+        } else {
+            data() %>% select_if(is_numeric) %>% cor
+        }
+    })
+
+    output$data_summary = renderPrint(summarized_data())
 }
 
 shinyApp(ui, server)
@@ -1719,51 +2070,67 @@ reactlogReset()
 reactlogShow()
 
 # reduce duplication ----
- sliderInput01 <- function(id, label = id) {
-  sliderInput(id, label, min = 0, max = 1, value = 0.5, step = 0.1)
+# helper function ----
+sliderInput01 = function(id, label = id) {
+    sliderInput(
+        id,
+        label,
+        min = 0,
+        max = 1,
+        value = 0.5,
+        step = 0.1
+    )
 }
 
 if (packageVersion("htmltools") >= "0.3.6.9004") {
-  vars <- c("alpha", "beta", "gamma", "delta")
-  sliders <- purrr::map(vars, sliderInput01)
-  ui <- fluidRow(!!!sliders)
+    vars = c("alpha", "beta", "gamma", "delta")
+    sliders = purrr::map(vars, sliderInput01)
+    ui = fluidRow(!!!sliders)
 }
 
-ngoSelectInput <- function(var, label, multiple = TRUE) {
-  choices <- sort(unique(ngo[[var]]))
-  label <- paste0("Choose a ", label, ": ")
-  selectInput(var, label, choices = choices, multiple = multiple)
+ngoSelectInput = function(var, label, multiple = TRUE) {
+    choices = sort(unique(ngo[[var]]))
+    label = paste0("Choose a ", label, ": ")
+    selectInput(var, label, choices = choices, multiple = multiple)
 }
-boxHeader <- function(...) {
-  box(width = 4, solidHeader = TRUE, ...)
+boxHeader = function(...) {
+    box(width = 4, solidHeader = TRUE, ...)
 }
 
 fluidRow(
-  boxHeader(ngoSelectInput("Trafficking.Type", "trafficking type")),
-  boxHeader(ngoSelectInput("Trafficking.Sub.Type", "trafficking sub type")),
-  boxHeader(ngoSelectInput("Victim.Gender", "gender"))
+    boxHeader(ngoSelectInput("Trafficking.Type", "trafficking type")),
+    boxHeader(
+        ngoSelectInput("Trafficking.Sub.Type", "trafficking sub type")
+    ),
+    boxHeader(ngoSelectInput("Victim.Gender", "gender"))
 )
 
-dfSelectInput <- function(df, var, label, multiple = TRUE) {
-  choices <- sort(unique(df[[var]]))
-  label <- paste0("Choose a ", label, ": ")
-  selectInput(var, label, choices = choices, multiple = multiple)
+dfSelectInput = function(df, var, label, multiple = TRUE) {
+    choices = sort(unique(df[[var]]))
+    label = paste0("Choose a ", label, ": ")
+    selectInput(var, label, choices = choices, multiple = multiple)
 }
 
 library(purrr)
-vars <- tibble::tribble(
-  ~ var,                  ~ label,
-  "Trafficking.Type",     "trafficking type",
-  "Trafficking.Sub.Type", "trafficking sub type",
-  "Victim.Gender",        "gender"
+vars = tibble::tribble(
+    ~ var,
+    ~ label,
+    "Trafficking.Type",
+    "trafficking type",
+    "Trafficking.Sub.Type",
+    "trafficking sub type",
+    "Victim.Gender",
+    "gender"
 )
 
 vars %>%
-  pmap(ngoSelectInput) %>% # create one select input for each row
-  map(boxHeader) %>%       # wrap each in a boxHeader()
-  fluidRow(!!!.)           # collapse into a single fluidRow()
+    pmap(ngoSelectInput) %>% # create one select input for each row
+    map(boxHeader) %>%       # wrap each in a boxHeader()
+    fluidRow(!!!.)           # collapse into a single fluidRow()
 
-select <-  map(vars$var, function(v) expr(.data[[!!v]] == input[[!!v]]))
+select =
+    map(vars$var, function(v)
+        expr(.data[[!!v]] == input[[!!v]]))
 select
 
 filter(ngo, !!!select)
@@ -1776,73 +2143,375 @@ library(lubridate)
 #>
 #>     date
 
-ui <- fluidPage(
-  textInput("date", "When were you born? (yyyy-mm-dd)"),
-  textOutput("error"),
-  textOutput("age")
+ui = fluidPage(
+    textInput("date", "When were you born? (yyyy-mm-dd)"),
+    textOutput("error"),
+    textOutput("age")
 )
 
-server <- function(input, output, session) {
-  birthday <- reactive({
-    req(input$date)
-    ymd(input$date, quiet = TRUE)
-  })
+server = function(input, output, session) {
+    birthday = reactive({
+        req(input$date)
+        ymd(input$date, quiet = TRUE)
+    })
 
-  output$error <- renderText({
-    if (is.na(birthday())) {
-      "Please enter valid date in yyyy-mm-dd form"
-    }
-  })
-  age <- reactive({
-    req(birthday())
-    (birthday() %--% today()) %/% years(1)
-  })
-  output$age <- renderText({
-    paste0("You are ", age(), " years old")
-  })
+    output$error = renderText({
+        if (is.na(birthday())) {
+            "Please enter valid date in yyyy-mm-dd form"
+        }
+    })
+    age = reactive({
+        req(birthday())
+        (birthday() %--% today()) %/% years(1)
+    })
+    output$age = renderText({
+        paste0("You are ", age(), " years old")
+    })
 }
 
 shinyApp(ui, server)
 
 # refactor this using function ----
-ymdInputUI <- function(label) {
-  label <- paste0(label, " (yyyy-mm-dd)")
+ymdInputUI = function(label) {
+    label = paste0(label, " (yyyy-mm-dd)")
 
-  fluidRow(
-    textInput("date", label),
-    textOutput("error")
-  )
+    fluidRow(textInput("date", label),
+             textOutput("error"))
 }
 
-ymdInputServer <- function(input, output, session) {
-  date <- reactive({
-    req(input$date)
-    ymd(input$date, quiet = TRUE)
-  })
+ymdInputServer = function(input, output, session) {
+    date = reactive({
+        req(input$date)
+        ymd(input$date, quiet = TRUE)
+    })
 
-  output$error <- renderText({
-    if (is.na(date())) {
-      "Please enter valid date in yyyy-mm-dd form"
-    }
-  })
+    output$error = renderText({
+        if (is.na(date())) {
+            "Please enter valid date in yyyy-mm-dd form"
+        }
+    })
 
-  date
+    date
 }
 
-ui <- fluidPage(
-  ymdInputUI("When were you born?"),
-  textOutput("age")
-)
+ui = fluidPage(ymdInputUI("When were you born?"),
+               # ymdInputUI("When were you born2?"),
+               textOutput("age"))
+# insert another function calls create 2 objects with same id, and even we make id argument,
+# then ymdInputServer function must also be supplied with the id argument to alter its input$date call
+# these troubles makes us turn to module as described below
+# remember, module are just functions with a namescope.
+server = function(input, output, session) {
+    birthday = ymdInputServer(input, output, session)
+    age = reactive({
+        req(birthday())
+        (birthday() %--% today()) %/% years(1)
+    })
 
-server <- function(input, output, session) {
-  birthday <- ymdInputServer(input, output, session)
-  age <- reactive({
-    req(birthday())
-    (birthday() %--% today()) %/% years(1)
-  })
-
-  output$age <- renderText({
-    paste0("You are ", age(), " years old")
-  })
+    output$age = renderText({
+        paste0("You are ", age(), " years old")
+    })
 }
 shinyApp(ui, server)
+
+# create module ----
+ymdInputUI = function(id, label) {
+    ns = NS(id)
+    label = str_c(label, ' (yyyy-mm-dd)')
+    fluidRow(textInput(ns('date'), label),
+             textOutput(ns('error')))
+}
+
+ui = fluidPage(ymdInputUI('birthday', 'when were you born'),
+               textOutput('age'))
+
+ymdInputServer = function(input, output, session) {
+    date = reactive({
+        req(input$date)
+        ymd(input$date, quiet = T)
+    })
+    output$error = renderText({
+        if (is.na(date())) {
+            'please enter valid date'
+        }
+    })
+    date
+}
+
+server = function(input, output, session) {
+    birthday = callModule(id = 'birthday', module = ymdInputServer)
+    age = reactive({
+        req(birthday())
+        (birthday() %--% today) %/% years(1)
+    })
+    output$age = renderText({
+        str_c('you are ', age(), ' years old')
+    })
+}
+
+shinyApp(ui, server)
+# (ymd(20200206) %--% today()) %/% days(1)
+
+# other use case: limited selection ----
+ui = fluidPage(
+    radioButtons(
+        "gender",
+        "Gender:",
+        choiceValues = list("male", "female", "self-described", "na"),
+        choiceNames = list(
+            "Male",
+            "Female",
+            textInput("gender_self", NULL, placeholder = "Self-described"),
+            "Prefer not to say"
+        ),
+        selected = "na",
+    ),
+    textOutput("txt")
+)
+
+server = function(input, output, session) {
+    observeEvent(input$gender_self, {
+        req(input$gender_self)
+        updateRadioButtons(session, "gender", selected = "self-described")
+    })
+
+    gender = reactive({
+        if (input$gender == "self-described") {
+            input$gender_self
+        } else {
+            input$gender
+        }
+    })
+
+    output$txt = renderText({
+        paste("You chose", gender())
+    })
+}
+
+# modularize
+radioButtonsWithOther = function(id,
+                                 label,
+                                 choices,
+                                 selected = NULL,
+                                 placeholder = NULL) {
+    # id = 'a'
+    # label = 'x'
+    # choices = list(
+    #     male = 'Male',
+    #     female = 'Female',
+    #     na = 'Prefer not to say'
+    # )
+    # placeholder = 'self-described'
+    # selected = 'na'
+
+    ns = NS(id)
+
+    radioButtons(
+        inputId = ns('primary'),
+        label = label,
+        choiceValues = c(names(choices), 'other'),
+        choiceNames = c(unname(choices),
+                        list(
+                            textInput(ns('other'), NULL, placeholder = placeholder)
+                        )),
+        selected = selected
+    )
+}
+
+radioButtonsWithOtherServer = function(input, output, session) {
+    # when callModule with some id like 'gender', it would translate expression input$primary to input$gender_primary
+    # basically this allow you to write server function in the same syntax without module, and not have to
+    # write meta-programming code to handle same behavior of different objects (generated from helpers function)
+    # also this kind of
+    observeEvent(input$primary, {
+        req(input$other)
+        updateRadioButtons(session, 'primary', selected = 'other')
+    })
+    reactive({
+        if (input$primary == 'other') {
+            input$other
+        } else {
+            input$primary
+        }
+    })
+}
+
+ui = fluidPage(
+    radioButtonsWithOther(
+        'gender',
+        label = 'Gender',
+        choices = list(male = 'Male',
+                       female = 'Female',
+                       na = 'Prefer not to say'),
+        placeholder = 'self-described',
+        selected = 'na'
+    ),
+    textOutput('txt')
+)
+
+server = function(input, output, session) {
+    gender = callModule(module = radioButtonsWithOtherServer, id = 'gender')
+    #id 'gender' must be the same with id of module on UI, otherwise it would not be connected and app fails
+    output$txt = renderText({
+        str_c('you choose ', gender())
+    })
+}
+
+shinyApp(ui, server)
+
+# hierachical select box ----
+library(tidyverse)
+install.packages('countrycode')
+country_df = countrycode::codelist %>%
+    as_tibble() %>%
+    select(iso3c, continent, country = cow.name) %>%
+    filter(!is.na(continent), !is.na(country))
+
+continents = sort(unique(country_df$continent))
+ui = fluidPage(
+    selectInput('continent', 'Continent', choices = continents),
+    selectInput('country', 'Country', choices = NULL),
+)
+server = function(input, output, session) {
+    countries = reactive({
+        country_df[country_df$continent == input$continent, , drop = FALSE]
+    })
+    observeEvent(input$continent, {
+        updateSelectInput(session, 'country', choices = countries()$country)
+    })
+}
+shinyApp(ui, server)
+# modal ----
+modalContinue = function(id) {
+    ns = NS(id)
+    showModal(
+        modalDialog(
+            "This is really important!",
+            "Are you sure you want to continue?",
+            footer = list(actionButton(ns("yes"), "yes"),
+                          actionButton(ns("no"), "no")),
+            easyClose = FALSE
+        )
+    )
+}
+modalContinueServer = function(id) {
+    module = function(input, output, session) {
+        val = reactiveVal(NULL)
+        observeEvent(input$yes, {
+            removeModal()
+            val(TRUE)
+        })
+        observeEvent(input$no, {
+            removeModal()
+            val(FALSE)
+        })
+
+        reactive(val())
+    }
+    callModule(module, id)
+}
+
+ui = fluidPage(actionButton("go", "Go"),
+               textOutput("result"))
+
+server = function(input, output, session) {
+    observeEvent(input$go, {
+        modalContinue("ok")
+    })
+    result = modalContinueServer("ok")
+
+    output$result = renderText(result())
+}
+shinyApp(ui, server)
+
+# exercise -----
+# 1 The following app plots user selected variables from the msleep dataset for three different types of mammals (carnivores, omnivores, and herbivores), with one tab for each type of mammal. Remove the redundancy in the selectInput() definitions with the use of functions.
+# library(tidyverse)
+
+ui = fluidPage(
+    selectInput(
+        inputId = "x",
+        label = "X-axis:",
+        choices = c(
+            "sleep_total",
+            "sleep_rem",
+            "sleep_cycle",
+            "awake",
+            "brainwt",
+            "bodywt"
+        ),
+        selected = "sleep_rem"
+    ),
+    selectInput(
+        inputId = "y",
+        label = "Y-axis:",
+        choices = c(
+            "sleep_total",
+            "sleep_rem",
+            "sleep_cycle",
+            "awake",
+            "brainwt",
+            "bodywt"
+        ),
+        selected = "sleep_total"
+    ),
+    tabsetPanel(
+        id = "vore",
+        tabPanel("Carnivore",
+                 plotOutput("plot_carni")),
+        tabPanel("Omnivore",
+                 plotOutput("plot_omni")),
+        tabPanel("Herbivore",
+                 plotOutput("plot_herbi"))
+    )
+)
+
+server = function(input, output, session) {
+    # make subsets
+    carni = reactive(filter(msleep, vore == "carni"))
+    omni  = reactive(filter(msleep, vore == "omni"))
+    herbi = reactive(filter(msleep, vore == "herbi"))
+
+    # make plots
+    output$plot_carni = renderPlot({
+        ggplot(data = carni(), aes_string(x = input$x, y = input$y)) +
+            geom_point()
+    })
+    output$plot_omni = renderPlot({
+        ggplot(data = omni(), aes_string(x = input$x, y = input$y)) +
+            geom_point()
+    })
+    output$plot_herbi = renderPlot({
+        ggplot(data = herbi(), aes_string(x = input$x, y = input$y)) +
+            geom_point()
+    })
+
+}
+
+shinyApp(ui = ui, server = server)
+# 2 Continue working with the same app from the previous exercise, and further remove redundancy in the code by modularizing how subsets and plots are created.
+
+axis_input = function(id, label) {
+    selectInput(
+        inputId = id,
+        label = label,
+        choices = msleep %>% colnames %>% .[6:11],
+        selected = choices %>% sample(1))
+}
+
+ui = fluidPage(
+    axis_input('x', 'X-axis:'),
+    axis_input('y', 'Y-axis:'),
+    tabsetPanel(
+        id = "vore",
+        tabPanel("Carnivore",
+                 plotOutput("plot_carni")),
+        tabPanel("Omnivore",
+                 plotOutput("plot_omni")),
+        tabPanel("Herbivore",
+                 plotOutput("plot_herbi"))
+    )
+)
+
+# 3 Suppose you have an app that is slow to launch when a user visits it. Can
+# modularizing your app code help solve this problem? Explain your reasoning.
