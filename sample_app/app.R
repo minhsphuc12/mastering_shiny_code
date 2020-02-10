@@ -2319,7 +2319,7 @@ radioButtonsWithOther = function(id,
 }
 
 radioButtonsWithOtherServer = function(input, output, session) {
-    # when callModule with some id like 'gender', it would translate expression input$primary to input$gender_primary
+    # when callModule with some id like 'gender', it would translate expression input$primary to input$gender-primary
     # basically this allow you to write server function in the same syntax without module, and not have to
     # write meta-programming code to handle same behavior of different objects (generated from helpers function)
     # also this kind of
@@ -2492,11 +2492,20 @@ shinyApp(ui = ui, server = server)
 # 2 Continue working with the same app from the previous exercise, and further remove redundancy in the code by modularizing how subsets and plots are created.
 
 axis_input = function(id, label) {
+    # ns = NS(id)
     selectInput(
         inputId = id,
         label = label,
         choices = msleep %>% colnames %>% .[6:11],
-        selected = choices %>% sample(1))
+        selected = msleep %>% colnames %>% .[6:11] %>% sample(1))
+}
+
+
+tabType = function(id) {
+    # id = 'a'
+    # animal = 'carni'
+    ns = NS(id)
+    tabPanel(id, plotOutput(str_c(animal, '_plot')))
 }
 
 ui = fluidPage(
@@ -2504,14 +2513,82 @@ ui = fluidPage(
     axis_input('y', 'Y-axis:'),
     tabsetPanel(
         id = "vore",
-        tabPanel("Carnivore",
-                 plotOutput("plot_carni")),
-        tabPanel("Omnivore",
-                 plotOutput("plot_omni")),
-        tabPanel("Herbivore",
-                 plotOutput("plot_herbi"))
+        tabType('carni'),
+        tabType('omni'),
+        tabType('herbi')
     )
 )
 
+tabServer = function(input, output, session) {
+    dt = reactive(filter(msleep, vore == input$id))
+    output$plot = renderPlot({
+        ggplot(data = dt(), aes_string(x = input$x, y = input$y)) +
+            geom_point()
+    })
+}
+
+server = function(input, output, session) {
+    callModule(id = 'carni', module = tabServer)
+    callModule(id = 'omni', module = tabServer)
+    callModule(id = 'herbi', module = tabServer)
+}
+
+shinyApp(ui, server)
+
 # 3 Suppose you have an app that is slow to launch when a user visits it. Can
 # modularizing your app code help solve this problem? Explain your reasoning.
+
+# tidy evaluation -----
+ui <- fluidPage(
+    selectInput("var", "Variable", choices = names(diamonds)),
+    tableOutput("output")
+)
+server <- function(input, output, session) {
+    data <- reactive(filter(diamonds, .data[[input$var]] > 0))
+    output$output <- renderTable(head(data()))
+}
+
+shinyApp(ui, server)
+
+df = tibble(a = c(1,2,3), b = c(1,2,3), c = c(3,4,6))
+df %>%
+    select(-one_of(c('a', 'b')))
+# one_of >> all_of | any_of
+
+vars <- c("year", "month")
+install.packages('nycflights13')
+library(nycflights13)
+
+select(flights, vars, "day")
+
+# tidy selection ----
+ui <- fluidPage(
+    selectInput("vars", "Variables", names(mtcars), multiple = TRUE),
+    tableOutput("data")
+)
+
+server <- function(input, output, session) {
+    output$data <- renderTable({
+        req(input$vars)
+        mtcars %>% select(all_of(input$vars))
+    })
+}
+shinyApp(ui, server)
+
+# advanced UI ------
+withTags(
+    ul(
+        li("Item one"),
+        li("Item two")
+    )
+)
+tag("circle", list(cx="10", cy="10", r="20", stroke="blue", fill="white"))
+
+# When calling a tag function, any named arguments become HTML attributes.
+library(shiny)
+consoleReactive(TRUE)
+
+a = reactiveVal(10)
+a()
+a(15)
+a()
